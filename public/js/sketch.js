@@ -66,7 +66,7 @@ function defineSketch(isPlayer) {
       updateText();
       let myCanvas = sketch.createCanvas(700, 600);
       if (isPlayer) {
-        for (var i = 0; i <= 1; i++) {
+        for (var i = 0; i <= 5; i++) {
           dots.push(new myCircle());
         }
       }
@@ -167,7 +167,7 @@ function defineSketch(isPlayer) {
         sketch.clear();
         if (isPlayer) {
           sketch.text(
-            "Need 2 Players to Play, FIRST TO 5 SCORE WINS!",
+            "Need 2 Players to Play, FIRST TO 15 SCORE WINS!",
             width / 3.8,
             height / 2
           );
@@ -183,7 +183,7 @@ function defineSketch(isPlayer) {
             height / 2
           );
       }
-      if (score > 3) {
+      if (score > 15) {
         socket.emit("winner", params.name);
       }
     };
