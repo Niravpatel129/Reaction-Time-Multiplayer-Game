@@ -240,6 +240,7 @@ socket.on("users", function(data) {
 var ClientReady;
 var ServerReady;
 function ready() {
+  gameStarted = true;
   ClientReady = true;
   pageLoad();
 
@@ -259,6 +260,7 @@ function ready() {
   if (ServerReady && !ClientReady) {
     gameStarted = true;
     ClientReady = true;
+    pageLoad();
   }
   pageLoad();
 }
@@ -266,6 +268,7 @@ function ready() {
 socket.on("ready", () => {
   ServerReady = true;
   console.log("ServerReady: " + ServerReady);
+  pageLoad();
 });
 
 $(document).ready(function() {
