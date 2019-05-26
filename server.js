@@ -38,6 +38,11 @@ io.on("connection", socket => {
       }
     }
 
+    io.in(params.room).emit("users", users.getUserList(params.room));
+    socket.on("ready", () => {
+      socket.to(params.room).emit("ready", users.getUserList(params.room));
+    });
+
     if (users.getUserSocketList(params.room).length === 2) {
       io.to(params.room).emit("start");
       console.log("emiting start game");

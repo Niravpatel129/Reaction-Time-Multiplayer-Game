@@ -12,10 +12,12 @@ var winner;
 var gamedone = false;
 var seeIfChanged;
 var PlayersReady = false;
+var user;
 
 socket.on("connect", function() {
   params = jQuery.deparam(window.location.search);
   socket.emit("join", params, function(err) {
+    user = params.name;
     if (err) {
       alert(err);
       window.location.href = "/";
@@ -221,19 +223,56 @@ socket.on("start", function(data) {
   gameStarted = true;
 });
 
-function ready() {
-  PlayersReady = true;
+socket.on("users", function(data) {
+  console.log(data);
+  var counter = 0;
+
+  data.map(dat => {
+    counter++;
+    pageLoad();
+    $("#p" + counter).text("Player " + counter + ": " + dat);
+  });
+  if (data.length == 2) {
+    $("#ready").css("display", "flex");
+  }
   pageLoad();
-  console.log("READY");
+});
+var ClientReady;
+var ServerReady;
+function ready() {
+  ClientReady = true;
+  pageLoad();
+
+  socket.emit("ready", () => {
+    console.log("Client is Ready");
+
+    pageLoad();
+  });
+
+  console.log("checking", ClientReady, ServerReady);
+  if (ClientReady && ServerReady) {
+    pageLoad();
+  }
+  pageLoad();
 }
+
+socket.on("ready", () => {
+  ServerReady = true;
+  console.log("ServerReady: " + ServerReady);
+});
 
 $(document).ready(function() {
   pageLoad();
 });
 
-function pageLoad() {
+function pageLoad(message, showbutton) {
   if (!PlayersReady) {
     $("#wrap").css("display", "none");
+    $("#roommessage").text("Waiting for another player to join");
+
+    if (!gameStarted) {
+      // $("#ready").css("display", "none");
+    }
   } else {
     $("#ReadyScreen").css("display", "none");
     $("#wrap").css("display", "flex");

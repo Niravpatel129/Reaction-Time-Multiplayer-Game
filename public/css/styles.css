@@ -272,7 +272,7 @@ canvas {
 #ready {
   width: 40%;
   margin-top: 10%;
-
+  display: none;
   margin-left: 30%;
   margin-right: 30%;
   text-align: center;
