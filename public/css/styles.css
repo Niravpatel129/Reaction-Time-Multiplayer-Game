@@ -22,9 +22,14 @@ ul {
   list-style-position: inside;
 }
 h3 {
+  width: 50%;
+  margin: 0 auto;
+  text-align: center;
   font-weight: 600;
   text-align: center;
   font-size: 1.5rem;
+}
+#roommessage {
 }
 button {
   background: #265f82;

@@ -133,6 +133,20 @@ function defineSketch(isPlayer) {
       dots.push(new myCircle());
     }
 
+    socket.on("winner", name => {
+      sketch.remove();
+      opdots = [];
+      dots = [];
+      console.log("stalp :(");
+      //PlayersReady && ServerReady && !gameStarted
+      gameStarted = false;
+      gamedone = true;
+      PlayersReady = false;
+      ServerReady = false;
+      winner = name;
+      pageLoad();
+    });
+
     socket.on("opponentcircles", data => {
       if (change != opdots) {
         opdots = [];
@@ -182,6 +196,9 @@ function defineSketch(isPlayer) {
             sketch.text("Lives: " + missed, 30, 95);
           }
         }
+        if (score >= 15) {
+          socket.emit("winner", params.name);
+        }
       } else {
         sketch.clear();
         if (isPlayer) {
@@ -192,27 +209,10 @@ function defineSketch(isPlayer) {
           );
         }
       }
-      if (gamedone) {
-        console.log(winner);
-        sketch.clear();
-        if (isPlayer)
-          sketch.text(
-            "Game Over, Winner was: " + winner,
-            width / 3.8,
-            height / 2
-          );
-      }
-      if (score > 15) {
-        socket.emit("winner", params.name);
-      }
     };
   };
 }
 
-socket.on("winner", name => {
-  gamedone = true;
-  winner = name;
-});
 function updateText() {
   if (gameStarted) {
     // $("h3").text("Highest Score: " + localStorage.getItem("score") || 0);
@@ -256,21 +256,30 @@ $(document).ready(function() {
 });
 
 function pageLoad() {
-  if (!PlayersReady && !ServerReady) {
+  console.log(PlayersReady, ServerReady);
+  if (gamedone && (!PlayersReady && !ServerReady)) {
     $("#wrap").css("display", "none");
-    $("#roommessage").text("Waiting for another player to join");
-  }
-  if (PlayersReady && ServerReady) {
-    console.log("sigh");
-    gameStarted = true;
-    $("#ReadyScreen").css("display", "none");
-    $("#wrap").css("display", "flex");
-    console.log(mySketch);
-    if (!mySketch) {
-      var mySketch = defineSketch(true);
-      new p5(mySketch, "myContainer");
-      var mySketch = defineSketch(false);
-      new p5(mySketch, "myContainer2");
+    $("#ReadyScreen").css("display", "block");
+    $("#roommessage").text("Game Over: Winner was " + winner);
+    $("#your").css("display", "none");
+    gamedone = false;
+    gameStarted = false;
+    score = 0;
+  } else {
+    if (!PlayersReady && !ServerReady) {
+      $("#wrap").css("display", "none");
+      $("#roommessage").text("Waiting for another player to join");
+    }
+    if (PlayersReady && ServerReady && !gameStarted) {
+      gameStarted = true;
+      $("#ReadyScreen").css("display", "none");
+      $("#wrap").css("display", "flex");
+      if (!game1 && !game2) {
+        var mySketch = defineSketch(true);
+        var game1 = new p5(mySketch, "myContainer");
+        var mySketch = defineSketch(false);
+        var game2 = new p5(mySketch, "myContainer2");
+      }
     }
   }
 }
