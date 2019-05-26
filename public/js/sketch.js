@@ -64,13 +64,18 @@ function defineSketch(isPlayer) {
     };
 
     sketch.setup = function() {
+      var canvasWidth = sketch.windowWidth / 2 - 20;
       updateText();
-      let myCanvas = sketch.createCanvas(700, 600);
+      let myCanvas = sketch.createCanvas(canvasWidth, 600);
       if (isPlayer) {
         for (var i = 0; i <= 5; i++) {
           dots.push(new myCircle());
         }
       }
+    };
+
+    sketchwindowResized = function() {
+      resizeCanvas(canvasWidth, 600);
     };
 
     sendCircle = function() {
