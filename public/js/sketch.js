@@ -220,16 +220,14 @@ function updateText() {
 }
 
 socket.on("start", function(data) {
-  gameStarted = true;
+  pageLoad();
 });
 
 socket.on("users", function(data) {
-  console.log(data);
   var counter = 0;
 
   data.map(dat => {
     counter++;
-    pageLoad();
     $("#p" + counter).text("Player " + counter + ": " + dat);
   });
   if (data.length == 2) {
@@ -239,29 +237,11 @@ socket.on("users", function(data) {
 });
 var ClientReady;
 var ServerReady;
+
 function ready() {
-  gameStarted = true;
-  ClientReady = true;
-  pageLoad();
-
-  socket.emit("ready", () => {
-    console.log("Client is Ready");
-
-    pageLoad();
-  });
-
-  console.log("checking", ClientReady, ServerReady);
-  if (ClientReady && ServerReady) {
-    gameStarted = true;
-    ClientReady = true;
-    pageLoad();
-  }
-
-  if (ServerReady && !ClientReady) {
-    gameStarted = true;
-    ClientReady = true;
-    pageLoad();
-  }
+  socket.emit("ready");
+  PlayersReady = true;
+  console.log("PlayersReady: " + PlayersReady);
   pageLoad();
 }
 
@@ -275,20 +255,22 @@ $(document).ready(function() {
   pageLoad();
 });
 
-function pageLoad(message, showbutton) {
-  if (!PlayersReady) {
+function pageLoad() {
+  if (!PlayersReady && !ServerReady) {
     $("#wrap").css("display", "none");
     $("#roommessage").text("Waiting for another player to join");
-
-    if (!gameStarted) {
-      // $("#ready").css("display", "none");
-    }
-  } else {
+  }
+  if (PlayersReady && ServerReady) {
+    console.log("sigh");
+    gameStarted = true;
     $("#ReadyScreen").css("display", "none");
     $("#wrap").css("display", "flex");
-    var mySketch = defineSketch(true);
-    new p5(mySketch, "myContainer");
-    var mySketch = defineSketch(false);
-    new p5(mySketch, "myContainer2");
+    console.log(mySketch);
+    if (!mySketch) {
+      var mySketch = defineSketch(true);
+      new p5(mySketch, "myContainer");
+      var mySketch = defineSketch(false);
+      new p5(mySketch, "myContainer2");
+    }
   }
 }
