@@ -1,0 +1,65 @@
+const path = require("path");
+const sleep = require("sleep");
+const http = require("http");
+const express = require("express");
+const socketIO = require("socket.io");
+var connections = []; //list of clients
+const { generateMessage, generateLocationMessage } = require("./utils/message");
+const { isRealString } = require("./utils/validation");
+const { Users } = require("./utils/users");
+const publicPath = path.join(__dirname, "./public");
+const port = process.env.PORT || 3000;
+var app = express();
+var server = http.createServer(app);
+var io = socketIO(server);
+var users = new Users();
+app.use(express.static(publicPath));
+var countdown = 0;
+var drawer = 0;
+var gameloop;
+var listofPlayers = [];
+var correctWordCounter = 0;
+///
+
+///
+
+io.on("connection", socket => {
+  connections.push(socket.id);
+
+  socket.on("join", (params, callback) => {
+    if (!isRealString(params.name) || !isRealString(params.room)) {
+      return callback("Name and room name are required.");
+    } else {
+      socket.join(params.room);
+      users.removeUser(socket.id);
+      users.addUser(socket.id, params.name, params.room);
+      if (users.getUserSocketList(params.room).length >= 3) {
+        return callback("sorry, room has 2 players already");
+      }
+    }
+
+    if (users.getUserSocketList(params.room).length === 2) {
+      io.to(params.room).emit("start");
+      console.log("emiting start game");
+    }
+
+    socket.on("dotsdata", data => {
+      // console.log("start");
+      // console.log(data);
+      // console.log("end");
+      socket.to(params.room).emit("opponentcircles", data);
+    });
+
+    socket.on("winner", name => {
+      io.in(params.room).emit("winner", name);
+    });
+
+    socket.on("disconnect", () => {
+      var user = users.removeUser(socket.id);
+    });
+  });
+});
+
+server.listen(port, () => {
+  console.log(`Server is up on ${port}`);
+});
