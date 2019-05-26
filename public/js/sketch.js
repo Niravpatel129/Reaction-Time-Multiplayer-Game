@@ -11,6 +11,7 @@ var winnnerCheck = 0;
 var winner;
 var gamedone = false;
 var seeIfChanged;
+var PlayersReady = false;
 
 socket.on("connect", function() {
   params = jQuery.deparam(window.location.search);
@@ -141,7 +142,7 @@ function defineSketch(isPlayer) {
     });
 
     sketch.draw = function() {
-      if (gameStarted) {
+      if (gameStarted && PlayersReady) {
         sketch.background(51);
 
         if (missed > 0) {
@@ -220,8 +221,26 @@ socket.on("start", function(data) {
   gameStarted = true;
 });
 
-var mySketch = defineSketch(true);
-new p5(mySketch, "myContainer");
+function ready() {
+  PlayersReady = true;
+  pageLoad();
+  console.log("READY");
+}
 
-var mySketch = defineSketch(false);
-new p5(mySketch, "myContainer2");
+$(document).ready(function() {
+  pageLoad();
+});
+
+function pageLoad() {
+  if (!PlayersReady) {
+    $("#wrap").css("display", "none");
+  } else {
+    $("#ReadyScreen").css("display", "none");
+    $("#wrap").css("display", "flex");
+    var mySketch = defineSketch(true);
+    new p5(mySketch, "myContainer");
+
+    var mySketch = defineSketch(false);
+    new p5(mySketch, "myContainer2");
+  }
+}

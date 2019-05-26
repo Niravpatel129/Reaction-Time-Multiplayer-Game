@@ -269,6 +269,15 @@ canvas {
   opacity: 0.5;
   background-color: white;
 }
+button {
+  width: 40%;
+  margin-top: 10%;
+
+  margin-left: 30%;
+  margin-right: 30%;
+  text-align: center;
+  padding: 0 auto;
+}
 
 #wrap {
   display: flex;
@@ -277,7 +286,7 @@ canvas {
   color: white;
   text-align: center;
   padding: 10px;
-  margin-top: 55px;
+  margin-top: 5px;
 }
 #myContainer2 canvas {
   width: 50%;
