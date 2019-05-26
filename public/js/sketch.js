@@ -239,7 +239,6 @@ function pageLoad() {
     $("#wrap").css("display", "flex");
     var mySketch = defineSketch(true);
     new p5(mySketch, "myContainer");
-
     var mySketch = defineSketch(false);
     new p5(mySketch, "myContainer2");
   }
