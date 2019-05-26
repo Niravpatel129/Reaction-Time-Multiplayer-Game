@@ -10,6 +10,7 @@ var socket = io();
 var winnnerCheck = 0;
 var winner;
 var gamedone = false;
+var seeIfChanged;
 
 socket.on("connect", function() {
   params = jQuery.deparam(window.location.search);
@@ -125,10 +126,13 @@ function defineSketch(isPlayer) {
     }
 
     socket.on("opponentcircles", data => {
-      opdots = [];
-      data.map(d => {
-        opdots.push(new myCircle(d.x, d.y, d.diameter));
-      });
+      if (change != opdots) {
+        opdots = [];
+        data.map(d => {
+          opdots.push(new myCircle(d.x, d.y, d.diameter));
+        });
+      }
+      var change = opdots;
     });
 
     sketch.draw = function() {
@@ -139,7 +143,9 @@ function defineSketch(isPlayer) {
           if (!isPlayer) {
             if (opdots.length > 0) {
               for (let k = 0; k < opdots.length; k++) {
-                opdots[k].display();
+                if (opdots.length > 0) {
+                  opdots[k].display();
+                }
               }
             }
           } else {
@@ -152,8 +158,11 @@ function defineSketch(isPlayer) {
                 diameter: dots[i].diameter
               };
               mydots.push(dotsData);
+            }
+            if (seeIfChanged != mydots) {
               socket.emit("dotsdata", mydots);
             }
+            seeIfChanged = mydots;
 
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
