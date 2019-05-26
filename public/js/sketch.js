@@ -251,7 +251,14 @@ function ready() {
 
   console.log("checking", ClientReady, ServerReady);
   if (ClientReady && ServerReady) {
+    gameStarted = true;
+    ClientReady = true;
     pageLoad();
+  }
+
+  if (ServerReady && !ClientReady) {
+    gameStarted = true;
+    ClientReady = true;
   }
   pageLoad();
 }
