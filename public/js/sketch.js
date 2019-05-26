@@ -137,8 +137,10 @@ function defineSketch(isPlayer) {
 
         if (missed > 0) {
           if (!isPlayer) {
-            for (let k = 0; k < opdots.length; k++) {
-              opdots[k].display();
+            if (opdots.length > 0) {
+              for (let k = 0; k < opdots.length; k++) {
+                opdots[k].display();
+              }
             }
           } else {
             mydots = [];
