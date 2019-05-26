@@ -228,7 +228,9 @@ socket.on("users", function(data) {
 
   data.map(dat => {
     counter++;
-    $("#p" + counter).text("Player " + counter + ": " + dat);
+    var text = $("#p" + counter).text("Player " + counter + ": " + dat);
+
+    $(text).addClass("blue");
   });
   if (data.length == 2) {
     $("#ready").css("display", "flex");
@@ -239,7 +241,7 @@ var ClientReady;
 var ServerReady;
 
 function ready() {
-  socket.emit("ready");
+  socket.emit("ready", params.name);
   PlayersReady = true;
   console.log("PlayersReady: " + PlayersReady);
   pageLoad();

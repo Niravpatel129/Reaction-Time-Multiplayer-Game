@@ -39,7 +39,8 @@ io.on("connection", socket => {
     }
 
     io.in(params.room).emit("users", users.getUserList(params.room));
-    socket.on("ready", () => {
+    socket.on("ready", data => {
+      io.in(params.room).emit("users", users.getUserList(params.room));
       socket.to(params.room).emit("ready", users.getUserList(params.room));
     });
 
