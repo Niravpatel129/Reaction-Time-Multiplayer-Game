@@ -9,7 +9,7 @@ var dots = [];
 var opdots = [];
 var params;
 var Opponentscore = 0;
-var Opponentmissed = 0;
+var Opponentmissed = 3;
 // Client side connect
 var socket = io();
 var winnnerCheck = 0;
@@ -23,14 +23,21 @@ socket.on("connect", function() {
   socket.emit("join", params, function(err) {
     user = params.name;
     if (err) {
-      alert(err);
+      swal("Error!", err, "error");
       window.location.href = "/";
     }
   });
 });
 
 socket.on("disconnect", function() {
+  socket.emit("clearlobby");
   console.log("Disconnected from server");
+});
+
+socket.on("clearlobby", () => {
+  swal("Error!", "Your opponent quit", "error").then(() => {
+    window.location.href = "/";
+  });
 });
 
 //Sketch below

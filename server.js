@@ -14,11 +14,6 @@ var server = http.createServer(app);
 var io = socketIO(server);
 var users = new Users();
 app.use(express.static(publicPath));
-var countdown = 0;
-var drawer = 0;
-var gameloop;
-var listofPlayers = [];
-var correctWordCounter = 0;
 ///
 
 ///
@@ -63,6 +58,7 @@ io.on("connection", socket => {
 
     socket.on("disconnect", () => {
       var user = users.removeUser(socket.id);
+      io.in(params.room).emit("clearlobby");
     });
   });
 });
