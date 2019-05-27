@@ -35,6 +35,11 @@ socket.on("disconnect", function() {
 //Sketch below
 function defineSketch(isPlayer) {
   return function(sketch) {
+    sketch.preload = function() {
+      sketch.soundFormats("mp3", "ogg");
+      song = sketch.loadSound("js/assets/Input-04a.mp3");
+      miss = sketch.loadSound("js/assets/Input-05.mp3");
+    };
     var width = 600;
     var height = 500;
 
@@ -114,6 +119,8 @@ function defineSketch(isPlayer) {
             dots[i].y
           );
           if (distance <= dots[i].diameter / 2) {
+            song.play();
+
             score++;
             dots[i].c = sketch.color(111, 204, 0);
             dots.splice(i, 1);
@@ -124,6 +131,7 @@ function defineSketch(isPlayer) {
             if (myLength == 0) {
               console.log("missed :(");
               score--;
+              miss.play();
             }
           }
         }
