@@ -48,7 +48,7 @@ function defineSketch(isPlayer) {
         } else {
           this.x = Math.round(sketch.random(width));
           this.y = Math.round(sketch.random(height));
-          this.diameter = sketch.random(50, 100);
+          this.diameter = sketch.random(40, 80);
           this.speed = 1;
           this.c = sketch.color("#FA8072");
         }
@@ -122,6 +122,8 @@ function defineSketch(isPlayer) {
           } else {
             myLength--;
             if (myLength == 0) {
+              console.log("missed :(");
+              score - 1;
               // missed--; add this back in to make it lose lives on miss
             }
           }
