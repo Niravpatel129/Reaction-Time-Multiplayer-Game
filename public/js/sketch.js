@@ -123,8 +123,7 @@ function defineSketch(isPlayer) {
             myLength--;
             if (myLength == 0) {
               console.log("missed :(");
-              score - 1;
-              // missed--; add this back in to make it lose lives on miss
+              score--;
             }
           }
         }
