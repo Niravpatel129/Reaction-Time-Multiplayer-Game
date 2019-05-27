@@ -50,10 +50,11 @@ io.on("connection", socket => {
     }
 
     socket.on("dotsdata", data => {
-      // console.log("start");
-      // console.log(data);
-      // console.log("end");
       socket.to(params.room).emit("opponentcircles", data);
+    });
+
+    socket.on("score", score => {
+      socket.to(params.room).emit("score", score);
     });
 
     socket.on("winner", name => {

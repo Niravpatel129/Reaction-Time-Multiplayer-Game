@@ -1,10 +1,15 @@
+//imports
+
+// Data
+var clock = 0;
 var score = 0;
 var missed = 3;
-var username;
 var gameStarted = false;
 var dots = [];
 var opdots = [];
 var params;
+var Opponentscore = 0;
+var Opponentmissed = 0;
 // Client side connect
 var socket = io();
 var winnnerCheck = 0;
@@ -12,7 +17,6 @@ var winner;
 var gamedone = false;
 var seeIfChanged;
 var PlayersReady = false;
-var user;
 
 socket.on("connect", function() {
   params = jQuery.deparam(window.location.search);
@@ -21,7 +25,6 @@ socket.on("connect", function() {
     if (err) {
       alert(err);
       window.location.href = "/";
-    } else {
     }
   });
 });
@@ -29,8 +32,6 @@ socket.on("connect", function() {
 socket.on("disconnect", function() {
   console.log("Disconnected from server");
 });
-
-//score
 
 //Sketch below
 function defineSketch(isPlayer) {
@@ -72,6 +73,8 @@ function defineSketch(isPlayer) {
     };
 
     sketch.setup = function() {
+      setInterval(timeIt, 1000);
+
       var canvasWidth = sketch.windowWidth / 2 - 20;
       updateText();
       let myCanvas = sketch.createCanvas(canvasWidth, 600);
@@ -122,6 +125,7 @@ function defineSketch(isPlayer) {
             song.play();
 
             score++;
+            socket.emit("score", score);
             dots[i].c = sketch.color(111, 204, 0);
             dots.splice(i, 1);
             generateAnotherDot();
@@ -156,6 +160,11 @@ function defineSketch(isPlayer) {
       pageLoad();
     });
 
+    socket.on("score", newScore => {
+      console.log(newScore);
+      Opponentscore = newScore;
+    });
+
     socket.on("opponentcircles", data => {
       if (change != opdots) {
         opdots = [];
@@ -179,6 +188,14 @@ function defineSketch(isPlayer) {
                 }
               }
             }
+            sketch.fill(sketch.color(255, 255, 255));
+            sketch.textSize(23);
+            sketch.stroke("#cee");
+            sketch.strokeWeight(1);
+            sketch.text("Score: " + Opponentscore, 30, 70);
+            sketch.fill(sketch.color(255, 255, 255));
+            sketch.textSize(23);
+            sketch.text("Lives: " + Opponentmissed, 30, 95);
           } else {
             mydots = [];
             for (let i = 0; i < dots.length; i++) {
@@ -226,6 +243,11 @@ function updateText() {
   if (gameStarted) {
     // $("h3").text("Highest Score: " + localStorage.getItem("score") || 0);
   }
+}
+
+function timeIt() {
+  clock++;
+  console.log(clock);
 }
 
 socket.on("start", function(data) {
