@@ -305,6 +305,7 @@ function pageLoad() {
     gamedone = false;
     gameStarted = false;
     score = 0;
+    Opponentscore = 0;
   } else {
     if (!PlayersReady && !ServerReady) {
       $("#wrap").css("display", "none");
