@@ -1,7 +1,11 @@
 //imports
 
 // Data
-var clock = 0;
+var ClientReady = false;
+var ServerReady = false;
+var localdata;
+var secondwhenover = 0;
+var clock = 45;
 var score = 0;
 var missed = 3;
 var gameStarted = false;
@@ -13,7 +17,6 @@ var Opponentmissed = 3;
 // Client side connect
 var socket = io();
 var winnnerCheck = 0;
-var winner;
 var gamedone = false;
 var seeIfChanged;
 var PlayersReady = false;
@@ -44,9 +47,12 @@ socket.on("clearlobby", () => {
 function defineSketch(isPlayer) {
   return function(sketch) {
     sketch.preload = function() {
+      setInterval(timeIt, 1000);
+
       sketch.soundFormats("mp3", "ogg");
-      song = sketch.loadSound("js/assets/Input-04a.mp3");
-      miss = sketch.loadSound("js/assets/Input-05.mp3");
+      // song = sketch.loadSound("js/assets/Input-04a.mp3");
+      song = sketch.loadSound("js/assets/singleshot.mp3");
+      miss = sketch.loadSound("js/assets/tripletake.mp3");
     };
     var width = 600;
     var height = 500;
@@ -80,8 +86,6 @@ function defineSketch(isPlayer) {
     };
 
     sketch.setup = function() {
-      setInterval(timeIt, 1000);
-
       var canvasWidth = sketch.windowWidth / 2 - 20;
       updateText();
       let myCanvas = sketch.createCanvas(canvasWidth, 600);
@@ -154,6 +158,9 @@ function defineSketch(isPlayer) {
     }
 
     socket.on("winner", name => {
+      clock = 45;
+      console.log(name);
+      localdata = name;
       sketch.remove();
       opdots = [];
       dots = [];
@@ -162,7 +169,6 @@ function defineSketch(isPlayer) {
       gamedone = true;
       PlayersReady = false;
       ServerReady = false;
-      winner = name;
       pageLoad();
     });
 
@@ -202,6 +208,8 @@ function defineSketch(isPlayer) {
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
             sketch.text("Lives: " + Opponentmissed, 30, 95);
+            sketch.fill(sketch.color(255, 255, 255));
+            sketch.textSize(23);
           } else {
             mydots = [];
             for (let i = 0; i < dots.length; i++) {
@@ -226,11 +234,17 @@ function defineSketch(isPlayer) {
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
             sketch.text("Lives: " + missed, 30, 95);
+            sketch.fill(sketch.color(255, 255, 255));
+            sketch.textSize(23);
+            sketch.text("Time Left: " + clock, 30, 120);
           }
         }
-        if (score >= 15) {
-          socket.emit("winner", params.name);
+        if (clock <= secondwhenover && !gamedone) {
+          gamedone = true;
+          socket.emit("clockended", { name: params.name, score: score });
         }
+
+        // EMIT TIMER ENDED
       } else {
         sketch.clear();
         if (isPlayer) {
@@ -245,11 +259,6 @@ function defineSketch(isPlayer) {
   };
 }
 
-function quickjoin() {
-  console.log("hello");
-  alert("hello");
-}
-
 function updateText() {
   if (gameStarted) {
     // $("h3").text("Highest Score: " + localStorage.getItem("score") || 0);
@@ -257,8 +266,7 @@ function updateText() {
 }
 
 function timeIt() {
-  clock++;
-  console.log(clock);
+  clock--;
 }
 
 socket.on("start", function(data) {
@@ -266,11 +274,20 @@ socket.on("start", function(data) {
 });
 
 socket.on("users", function(data) {
+  console.log("user data collected player 1 should be declared");
   var counter = 0;
-
+  if (!data) {
+    console.log("user data was null: " + data);
+    socket.emit("connection");
+  }
   data.map(dat => {
     counter++;
     var text = $("#p" + counter).text("Player " + counter + ": " + dat);
+    console.log(text.length);
+    if (text.length <= 0) {
+      console.log("EMPTY :/");
+      socket.emit("forcereload");
+    }
 
     $(text).addClass("blue");
   });
@@ -279,8 +296,38 @@ socket.on("users", function(data) {
   }
   pageLoad();
 });
-var ClientReady;
-var ServerReady;
+
+socket.on("gamewinner", data => {
+  let localwinner;
+  let localwinnerscore;
+  let localloser;
+  let localloserscore;
+  if (data.score > score) {
+    localwinnerscore = data.score;
+    localwinner = data.name;
+    localloser = params.name;
+    localloserscore = score;
+    console.log(data.name + " is the winner");
+  } else {
+    localwinner = params.name;
+    localwinnerscore = score;
+    localloser = data.name;
+    localloserscore = data.score;
+    console.log(params.name + " is the winner");
+  }
+
+  //for fun code below
+  if (upper(localwinner) === "VALZIM" || upper(localwinner) === "ASHISH") {
+    localwinner = "ashishisblackastheycome";
+  }
+
+  socket.emit("winner", {
+    localwinner,
+    localwinnerscore,
+    localloser,
+    localloserscore
+  });
+});
 
 function ready() {
   socket.emit("ready", params.name);
@@ -304,7 +351,18 @@ function pageLoad() {
   if (gamedone && (!PlayersReady && !ServerReady)) {
     $("#wrap").css("display", "none");
     $("#ReadyScreen").css("display", "block");
-    $("#roommessage").text("Game Over: Winner was " + winner);
+    $("#roommessage").text(
+      "Game Over: Winner was " +
+        localdata.localwinner +
+        " with a score of " +
+        localdata.localwinnerscore
+    );
+    $("#loser").text(
+      "Game Over: Loser was " +
+        localdata.localloser +
+        " with a score of " +
+        localdata.localloserscore
+    );
     $("#your").css("display", "none");
     gamedone = false;
     gameStarted = false;
