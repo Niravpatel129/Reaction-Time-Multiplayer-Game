@@ -140,7 +140,7 @@ function defineSketch(isPlayer) {
           } else {
             myLength--;
             if (myLength == 0) {
-              console.log("missed :(");
+              console.log("missed");
               score--;
               miss.play();
             }
@@ -157,7 +157,6 @@ function defineSketch(isPlayer) {
       sketch.remove();
       opdots = [];
       dots = [];
-      console.log("stalp :(");
       //PlayersReady && ServerReady && !gameStarted
       gameStarted = false;
       gamedone = true;
@@ -244,6 +243,11 @@ function defineSketch(isPlayer) {
       }
     };
   };
+}
+
+function quickjoin() {
+  console.log("hello");
+  alert("hello");
 }
 
 function updateText() {

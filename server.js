@@ -19,6 +19,8 @@ app.use(express.static(publicPath));
 ///
 
 io.on("connection", socket => {
+  socket.emit("getrooms", users.getRoomList());
+
   connections.push(socket.id);
 
   socket.on("join", (params, callback) => {
@@ -50,6 +52,10 @@ io.on("connection", socket => {
 
     socket.on("score", score => {
       socket.to(params.room).emit("score", score);
+    });
+
+    socket.on("getrooms", () => {
+      console.log("got something!!!");
     });
 
     socket.on("winner", name => {

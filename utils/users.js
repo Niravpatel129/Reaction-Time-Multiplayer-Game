@@ -1,8 +1,10 @@
-[{
-  id: '/#12poiajdspfoif',
-  name: 'Andrew',
-  room: 'The Office Fans'
-}]
+[
+  {
+    id: "/#12poiajdspfoif",
+    name: "Andrew",
+    room: "The Office Fans"
+  }
+];
 
 // addUser(id, name, room)
 // removeUser(id)
@@ -10,54 +12,83 @@
 // getUserList(room)
 
 class Users {
-  constructor () {
+  constructor() {
     this.users = [];
   }
-  addUser (id, name, room) {
-    var user = {id, name, room};
+  addUser(id, name, room) {
+    var user = { id, name, room };
     this.users.push(user);
     return user;
   }
-  removeUser (id) {
+  removeUser(id) {
     var user = this.getUser(id);
 
     if (user) {
-      this.users = this.users.filter((user) => user.id !== id);
+      this.users = this.users.filter(user => user.id !== id);
     }
 
     return user;
   }
-  getUser (id) {
-    return this.users.filter((user) => user.id === id)[0]
+  getUser(id) {
+    return this.users.filter(user => user.id === id)[0];
   }
-  
-  getUserList (room) {
-    var users = this.users.filter((user) => user.room === room);
-    var namesArray = users.map((user) => user.name);
+
+  getUserList(room) {
+    var users = this.users.filter(user => user.room === room);
+    var namesArray = users.map(user => user.name);
 
     return namesArray;
   }
 
-  getUserSocketList (room) {
-    var users = this.users.filter((user) => user.room === room);
-    var socketsArray = users.map((user) => user.id);
+  getRoomList() {
+    var Currentrooms = [];
+    this.users.map(dat => {
+      Currentrooms.push(dat.room);
+    });
+    var Currentrooms;
+
+    var newArr = Currentrooms;
+
+    for (var h = 0; h < Currentrooms.length; h++) {
+      var curItem = Currentrooms[h];
+      var foundCount = 0;
+      // search array for item
+      for (var i = 0; i < Currentrooms.length; i++) {
+        if (Currentrooms[i] == Currentrooms[h]) foundCount++;
+      }
+      if (foundCount > 1) {
+        // remove repeated item from new array
+        for (var j = 0; j < newArr.length; j++) {
+          if (newArr[j] == curItem) {
+            newArr.splice(j, 1);
+            j = j - 1;
+          }
+        }
+      }
+    }
+    return newArr;
+  }
+
+  getUserSocketList(room) {
+    var users = this.users.filter(user => user.room === room);
+    var socketsArray = users.map(user => user.id);
 
     return socketsArray;
   }
 }
 
-module.exports = {Users};
+module.exports = { Users };
 
- // class Person {
- //   constructor (name, age) {
- //     this.name = name;
- //     this.age = age;
- //   }
- //   getUserDescription () {
- //     return `${this.name} is ${this.age} year(s) old.`;
- //   }
- // }
- //
- // var me = new Person('Andrew', 25);
- // var description = me.getUserDescription();
- // console.log(description);
+// class Person {
+//   constructor (name, age) {
+//     this.name = name;
+//     this.age = age;
+//   }
+//   getUserDescription () {
+//     return `${this.name} is ${this.age} year(s) old.`;
+//   }
+// }
+//
+// var me = new Person('Andrew', 25);
+// var description = me.getUserDescription();
+// console.log(description);

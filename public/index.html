@@ -7,27 +7,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <script src="/js/libs/jquery-3.1.0.min.js"></script>
   <script src="/js/libs/deparam.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script src="/js/quickjoin.js"></script>
+
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body class="centered-form">
   <div class="centered-form__form">
-    <form action="/game.html">
+    <form id="myForm" action="/game.html">
       <div class="form-field">
         <h3>Join a Lobby!<h3>
       </div>
       <div class="form-field">
         <label>Display name</label>
-        <input type="text" name="name" autofocus/>
+        <input id="username" type="text" name="name" autofocus/>
       </div>
       <div class="form-field">
-        <label>Room name</label>
-        <input type="text" name="room"/>
+        <label>Room ID</label>
+        <input id="roomname" type="text" name="room"/>
       </div>
       <div class="form-field">
         <button>Join</button>
+        <br><br>
+        <button type="button" onClick="quickjoin()" class="quickjoin">Quick Join</button>
+
       </div>
     </form>
+
   </div>
 </body>
 
