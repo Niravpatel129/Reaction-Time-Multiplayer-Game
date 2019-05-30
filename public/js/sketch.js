@@ -53,7 +53,10 @@ function defineSketch(isPlayer) {
       // song = sketch.loadSound("js/assets/Input-04a.mp3");
       song = sketch.loadSound("js/assets/singleshot.mp3");
       miss = sketch.loadSound("js/assets/tripletake.mp3");
+      song.setVolume(0.1);
+      miss.setVolume(0.1);
     };
+
     var width = 600;
     var height = 500;
 
@@ -317,7 +320,10 @@ socket.on("gamewinner", data => {
   }
 
   //for fun code below
-  if (upper(localwinner) === "VALZIM" || upper(localwinner) === "ASHISH") {
+  if (
+    localwinner.toUpperCase() === "VALZIM" ||
+    localwinner.toUpperCase() === "ASHISH"
+  ) {
     localwinner = "ashishisblackastheycome";
   }
 
