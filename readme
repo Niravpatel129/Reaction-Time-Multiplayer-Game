@@ -1,5 +1,5 @@
 
-Web Applicatian developed as a pet project, fully functional you can play with your friends just join the same room and type the command /start
+Web Applicatian developed as a pet project, fully functional you can play with your friends just join the same room
 Languages and Technologies used:
 
 Javascript
@@ -7,7 +7,7 @@ Node.js
 Heroku
 Express
 SocketIO
-MustacheJS
+P5js
 HTML
 CSS
 Heroku Link: https://aim-booster.herokuapp.com/
