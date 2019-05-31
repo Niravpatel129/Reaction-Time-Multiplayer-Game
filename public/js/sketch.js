@@ -1,5 +1,5 @@
 //imports
-
+console.log("%c Oh my heavens! ", "background: #222; color: #bada55");
 // Data
 var ClientReady = false;
 var ServerReady = false;
@@ -20,6 +20,8 @@ var winnnerCheck = 0;
 var gamedone = false;
 var seeIfChanged;
 var PlayersReady = false;
+var serverMouseX;
+var serverMouseY;
 
 socket.on("connect", function() {
   params = jQuery.deparam(window.location.search);
@@ -48,6 +50,7 @@ function defineSketch(isPlayer) {
   return function(sketch) {
     sketch.preload = function() {
       setInterval(timeIt, 1000);
+      img = sketch.loadImage("js/assets/pointer.png");
 
       sketch.soundFormats("mp3", "ogg");
       // song = sketch.loadSound("js/assets/Input-04a.mp3");
@@ -72,12 +75,22 @@ function defineSketch(isPlayer) {
           this.y = Math.round(sketch.random(height));
           this.diameter = sketch.random(40, 80);
           this.speed = 1;
-          this.c = sketch.color("#FA8072");
+          this.c = sketch.color("#FF5733");
         }
       }
       display() {
+        sketch.strokeWeight(2);
+        sketch.stroke("#FFF");
         sketch.fill(this.c);
         sketch.ellipse(this.x, this.y, this.diameter, this.diameter);
+        sketch.ellipse(
+          this.x,
+          this.y,
+          this.diameter / 1.5,
+          this.diameter / 1.5
+        );
+
+        sketch.ellipse(this.x, this.y, this.diameter / 3, this.diameter / 3);
       }
     }
 
@@ -190,6 +203,17 @@ function defineSketch(isPlayer) {
       var change = opdots;
     });
 
+    socket.on("mouselocation", data => {
+      serverMouseX = data.x;
+      serverMouseY = data.y;
+    });
+
+    drawServerMouse = () => {
+      if (serverMouseX != null && serverMouseY != null) {
+        sketch.image(img, serverMouseX, serverMouseY);
+      }
+    };
+
     sketch.draw = function() {
       if (gameStarted && PlayersReady) {
         sketch.background(51);
@@ -213,6 +237,7 @@ function defineSketch(isPlayer) {
             sketch.text("Lives: " + Opponentmissed, 30, 95);
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
+            drawServerMouse();
           } else {
             mydots = [];
             for (let i = 0; i < dots.length; i++) {
@@ -226,6 +251,10 @@ function defineSketch(isPlayer) {
             }
             if (seeIfChanged != mydots) {
               socket.emit("dotsdata", mydots);
+              socket.emit("mouseLocation", {
+                x: sketch.mouseX,
+                y: sketch.mouseY
+              });
             }
             seeIfChanged = mydots;
 
@@ -277,10 +306,9 @@ socket.on("start", function(data) {
 });
 
 socket.on("users", function(data) {
-  console.log("user data collected player 1 should be declared");
   var counter = 0;
   if (!data) {
-    console.log("user data was null: " + data);
+    console.warn("user data was null: " + data);
     socket.emit("connection");
   }
   data.map(dat => {
@@ -353,7 +381,6 @@ $(document).ready(function() {
 });
 
 function pageLoad() {
-  console.log(PlayersReady, ServerReady);
   if (gamedone && (!PlayersReady && !ServerReady)) {
     $("#wrap").css("display", "none");
     $("#ReadyScreen").css("display", "block");

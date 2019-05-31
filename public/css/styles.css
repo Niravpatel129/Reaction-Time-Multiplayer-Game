@@ -253,7 +253,7 @@ body {
 }
 
 canvas {
-  opacity: 0.8;
+  opacity: 1;
   padding: 5px;
   background-color: white;
 }

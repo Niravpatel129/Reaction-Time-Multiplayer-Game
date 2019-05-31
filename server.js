@@ -54,6 +54,10 @@ io.on("connection", socket => {
       socket.to(params.room).emit("opponentcircles", data);
     });
 
+    socket.on("mouseLocation", data => {
+      socket.to(params.room).emit("mouselocation", data);
+    });
+
     socket.on("clockended", data => {
       socket.to(params.room).emit("gamewinner", data);
     });
