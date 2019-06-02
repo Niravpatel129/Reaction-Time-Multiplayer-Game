@@ -1,6 +1,7 @@
 //imports
 console.log("%c Oh my heavens! ", "background: #222; color: #bada55");
 // Data
+var clocktimer;
 var ClientReady = false;
 var ServerReady = false;
 var localdata;
@@ -49,7 +50,6 @@ socket.on("clearlobby", () => {
 function defineSketch(isPlayer) {
   return function(sketch) {
     sketch.preload = function() {
-      setInterval(timeIt, 1000);
       img = sketch.loadImage("js/assets/pointer.png");
 
       sketch.soundFormats("mp3", "ogg");
@@ -102,6 +102,9 @@ function defineSketch(isPlayer) {
     };
 
     sketch.setup = function() {
+      if (!clocktimer) {
+        clocktimer = setInterval(timeIt, 1000);
+      }
       var canvasWidth = sketch.windowWidth / 2 - 20;
       updateText();
       let myCanvas = sketch.createCanvas(canvasWidth, 600);
@@ -174,8 +177,6 @@ function defineSketch(isPlayer) {
     }
 
     socket.on("winner", name => {
-      clock = 45;
-      console.log(name);
       localdata = name;
       sketch.remove();
       opdots = [];
@@ -298,6 +299,7 @@ function updateText() {
 }
 
 function timeIt() {
+  console.log(clock);
   clock--;
 }
 
@@ -411,6 +413,7 @@ function pageLoad() {
       $("#ReadyScreen").css("display", "none");
       $("#wrap").css("display", "flex");
       if (!game1 && !game2) {
+        clock = 45;
         var mySketch = defineSketch(true);
         var game1 = new p5(mySketch, "myContainer");
         var mySketch = defineSketch(false);
