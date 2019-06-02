@@ -299,7 +299,7 @@ function updateText() {
 }
 
 function timeIt() {
-  console.log(clock);
+  // console.log(clock);
   clock--;
 }
 
