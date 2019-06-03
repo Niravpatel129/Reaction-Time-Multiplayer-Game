@@ -15,6 +15,9 @@ socket.on("return", data => {
   if (data.length) {
     $("#roomname").val(data[0]);
     $("#myForm").submit();
+  } else {
+    $("#roomname").val(Math.floor(Math.random(2, 100) * 1000));
+    $("#myForm").submit();
   }
   console.log("recieved something");
 });

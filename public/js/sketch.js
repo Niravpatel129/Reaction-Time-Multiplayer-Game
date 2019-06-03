@@ -29,8 +29,9 @@ socket.on("connect", function() {
   socket.emit("join", params, function(err) {
     user = params.name;
     if (err) {
-      swal("Error!", err, "error");
-      window.location.href = "/";
+      swal("Error!", err, "error").then(function() {
+        window.location.href = "/";
+      });
     }
   });
 });
@@ -302,9 +303,10 @@ function timeIt() {
   clock--;
 }
 
-// socket.on("start", function(data) {
-//   pageLoad();
-// });
+socket.on("start", function(data) {
+  $("#ready").css("display", "inline-block");
+  pageLoad();
+});
 
 socket.on("users", function(data) {
   var counter = 0;
