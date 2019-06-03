@@ -1,29 +1,20 @@
-// var socket = io();
-// var localrooms = [];
-// var seed = 1;
-
-// socket.on("connect", () => {
-//   console.log("connected");
-// });
+var socket = io();
 
 function quickjoin() {
-  alert("Work in progress!");
-  //   socket.emit("getrooms");
-  //   console.log("quickjoin");
-  //   $("#username").val("guest");
-  //   if (localrooms.length > 0) {
-  //     $("#roomname").val(localrooms[0]);
-  //   } else {
-  //     $("#roomname").val(random());
+  let name = $("#username").val();
+  if (!name) {
+    swal("Error!", "You need to add a name first!", "error");
+  } else {
+    console.log(name, "pressed quickjoin");
+    socket.emit("getrooms");
+  }
 }
 
-//   $("#myForm").submit();
-// }
-
-// socket.on("getrooms", rooms => {
-//   localrooms = rooms;
-// });
-
-// function random() {
-//   return Math.round(Math.random() * 100) + 1;
-// }
+socket.on("return", data => {
+  console.log(data[0]);
+  if (data.length) {
+    $("#roomname").val(data[0]);
+    $("#myForm").submit();
+  }
+  console.log("recieved something");
+});

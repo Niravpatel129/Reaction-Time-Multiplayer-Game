@@ -19,12 +19,17 @@ app.use(express.static(publicPath));
 ///
 
 io.on("connection", socket => {
-  socket.emit("getrooms", users.getRoomList());
+  socket.on("getrooms", () => {
+    console.log("get all rooms");
+    let listofrooms = users.getRoomList();
+    socket.emit("return", listofrooms);
+  });
 
   connections.push(socket.id);
 
   socket.on("join", (params, callback) => {
     if (!isRealString(params.name) || !isRealString(params.room)) {
+      console.log("Name and room name are required");
       return callback("Name and room name are required.");
     } else {
       socket.join(params.room);
@@ -67,10 +72,6 @@ io.on("connection", socket => {
 
     socket.on("score", score => {
       socket.to(params.room).emit("score", score);
-    });
-
-    socket.on("getrooms", () => {
-      console.log("got something!!!");
     });
 
     socket.on("winner", name => {
