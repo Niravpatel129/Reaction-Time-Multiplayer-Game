@@ -42,6 +42,8 @@ io.on("connection", socket => {
         return callback("sorry, room has 2 players already");
       }
     }
+    // http://prntscr.com/nx6nre
+    // http://prntscr.com/nx6nv4
 
     io.in(params.room).emit("users", users.getUserList(params.room));
     socket.on("ready", data => {

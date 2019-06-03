@@ -1,5 +1,13 @@
 var socket = io();
 
+socket.on("connect", () => {
+  console.log(window.location.search);
+  switch (window.location.search) {
+    case "?303":
+      swal("Error!", "Your opponent quit!", "error");
+  }
+});
+
 function quickjoin() {
   let name = $("#username").val();
   if (!name) {

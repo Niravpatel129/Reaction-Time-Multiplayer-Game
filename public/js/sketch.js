@@ -48,9 +48,7 @@ socket.on("disconnect", function() {
 });
 
 socket.on("clearlobby", () => {
-  swal("Error!", "Your opponent quit", "error").then(() => {
-    window.location.href = "/?303";
-  });
+  window.location.href = "/?303";
 });
 
 //Sketch below
@@ -282,7 +280,7 @@ function defineSketch(isPlayer) {
             // sketch.text("Lives: " + missed, 30, 95);
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
-            sketch.text("Time Left: " + clock, 30, 120);
+            sketch.text("Time Left: " + clock, 30, 100);
           }
         }
         if (clock <= secondwhenover && !gamedone) {
