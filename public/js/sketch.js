@@ -328,6 +328,8 @@ socket.on("users", function(data) {
   data.map(dat => {
     counter++;
     var text = $("#player" + counter).text(dat);
+    var text = $("#player" + counter).css("opacity", "1");
+
     if (text.length <= 0) {
       console.log("EMPTY :/");
       location.reload();

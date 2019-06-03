@@ -265,8 +265,18 @@ h2 {
   padding-top: 12px;
 }
 
+#player1,
+#player2 {
+  text-transform: capitalize;
+  opacity: 0.1;
+  color: whitesmoke;
+  text-shadow: 1px 1px rgb(117, 117, 185);
+  padding-bottom: 5px;
+}
+
 #player1ready,
 #player2ready {
+  opacity: 0.82;
   padding: 2px;
   font-family: sans-serif;
   font-weight: 100;
