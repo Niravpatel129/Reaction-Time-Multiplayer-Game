@@ -1,5 +1,5 @@
 //imports
-console.log("%c Oh my heavens! ", "background: #222; color: #bada55");
+console.log("%c This is kinda cool! ", "background: #222; color: #bada55");
 // Data
 var clocktimer;
 var ClientReady = false;
@@ -53,7 +53,6 @@ function defineSketch(isPlayer) {
       img = sketch.loadImage("js/assets/pointer.png");
 
       sketch.soundFormats("mp3", "ogg");
-      // song = sketch.loadSound("js/assets/Input-04a.mp3");
       song = sketch.loadSound("js/assets/singleshot.mp3");
       miss = sketch.loadSound("js/assets/tripletake.mp3");
       song.setVolume(0.1);
@@ -315,7 +314,7 @@ socket.on("users", function(data) {
   }
   data.map(dat => {
     counter++;
-    var text = $("#p" + counter).text("Player " + counter + ": " + dat);
+    var text = $("#player" + counter).text(dat);
     console.log(text.length);
     if (text.length <= 0) {
       console.log("EMPTY :/");
@@ -331,30 +330,23 @@ socket.on("users", function(data) {
 });
 
 socket.on("gamewinner", data => {
-  let localwinner;
-  let localwinnerscore;
-  let localloser;
-  let localloserscore;
+  var localwinner;
+  var localwinnerscore;
+  var localloser;
+  var localloserscore;
+
   if (data.score > score) {
     localwinnerscore = data.score;
     localwinner = data.name;
     localloser = params.name;
     localloserscore = score;
-    console.log(data.name + " is the winner");
+    console.log(data.name + " is the winner with a score of " + score);
   } else {
     localwinner = params.name;
     localwinnerscore = score;
     localloser = data.name;
     localloserscore = data.score;
-    console.log(params.name + " is the winner");
-  }
-
-  //for fun code below
-  if (
-    localwinner.toUpperCase() === "VALZIM" ||
-    localwinner.toUpperCase() === "ASHISH"
-  ) {
-    localwinner = "ashishisblackastheycome";
+    console.log(params.name + " is the winner with a score of " + data.score);
   }
 
   socket.emit("winner", {
@@ -369,10 +361,24 @@ function ready() {
   socket.emit("ready", params.name);
   PlayersReady = true;
   console.log("PlayersReady: " + PlayersReady);
+
+  // Do some magic
+  let player1 = $("#player1").text();
+  let player2 = $("#player2").text();
+  if (params.name === player1) {
+    $("#player1ready").text("Ready");
+  } else {
+    $("#player2ready").text("Ready");
+  }
   pageLoad();
 }
 
-socket.on("ready", () => {
+socket.on("ready", name => {
+  if (name === player1) {
+    $("#player1ready").text("Ready");
+  } else {
+    $("#player2ready").text("Ready");
+  }
   ServerReady = true;
   console.log("ServerReady: " + ServerReady);
   pageLoad();
@@ -384,9 +390,10 @@ $(document).ready(function() {
 
 function pageLoad() {
   if (gamedone && (!PlayersReady && !ServerReady)) {
+    // this is in the condition for "Play Again"
     $("#wrap").css("display", "none");
-    $("#ReadyScreen").css("display", "block");
-    $("#roommessage").text(
+    $("#playAgainScreen").css("display", "block");
+    $("#winner").text(
       "Game Over: Winner was " +
         localdata.localwinner +
         " with a score of " +

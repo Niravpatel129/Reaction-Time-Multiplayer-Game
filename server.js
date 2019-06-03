@@ -3,7 +3,7 @@ const sleep = require("sleep");
 const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
-var connections = []; //list of clients
+var connections = [];
 const { generateMessage, generateLocationMessage } = require("./utils/message");
 const { isRealString } = require("./utils/validation");
 const { Users } = require("./utils/users");
@@ -38,7 +38,7 @@ io.on("connection", socket => {
     io.in(params.room).emit("users", users.getUserList(params.room));
     socket.on("ready", data => {
       io.in(params.room).emit("users", users.getUserList(params.room));
-      socket.to(params.room).emit("ready", users.getUserList(params.room));
+      socket.to(params.room).emit("ready", data);
     });
 
     socket.on("forcereload", () => {

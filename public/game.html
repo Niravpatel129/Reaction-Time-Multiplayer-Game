@@ -15,24 +15,35 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/js/libs/mustache.js"></script>
     <script src="/js/libs/moment.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/css/styles.css" />
 
     <title>Aim Booster</title>
   </head>
   <body>
+    <!-- This is the Ready Screen -->
     <div id="ReadyScreen">
-      <div><h3 id="roommessage">Are you ready?</h3></div>
-      <div><h3 id="loser"></h3></div>
-      <div id="your">
-        <br />
-        <h3 id="p1">Player 1: ...Waiting</h3>
-        <br />
-        <h3 id="p2">Player 2: ...Waiting</h3>
-      </div>
-      <div id="Opponent"></div>
-      <button id="ready" onclick="ready()"><h2>Ready</h2></button>
+      <div id="playercard1">
+      <h3 id="player1">Player 1</h3>
+      <img id="avatar1" src="js/assets/Bitmap.png" alt="Smiley face">
+      <h3 id="player1ready">Not Ready</h3>
     </div>
+    <img id="vs" src="js/assets/VS.png" alt="Smiley face">
+
+    <div id="playercard2">
+        <h3 id="player2">Player 2</h3>
+        <img id="avatar2" src="js/assets/Bitmap.png" alt="Smiley face">
+        <h3 id="player2ready">Not Ready</h3>
+      </div>
+      <button id="ready" onclick="ready()"><h2>READY</h2></button>
+  </div>
+    <!-- Ending of Ready Screen -->
+    <div id="playAgainScreen">
+      <h3 id="winner"></h1>
+        <h3 id="loser"></h2>
+        </div>
+    <!-- Ending of Game Won Screen -->
     <div id="wrap">
       <div id="myContainer"><h2>You</h2></div>
       <div id="myContainer2"><h2>Your Opponent</h2></div>
