@@ -2,6 +2,7 @@
 console.log("%c This is kinda cool! ", "background: #222; color: #bada55");
 // Data
 var clocktimer;
+var latestscoreupdate = 0;
 var ClientReady = false;
 var ServerReady = false;
 var localdata;
@@ -29,9 +30,14 @@ socket.on("connect", function() {
   socket.emit("join", params, function(err) {
     user = params.name;
     if (err) {
-      swal("Error!", err, "error").then(function() {
-        window.location.href = "/";
-      });
+      swal("Error!", err, "error")
+        .then(function() {
+          (window.location.href = "/?error="), err;
+        })
+        .catch(() => {
+          alert("unknown error occured, just try again :)");
+          window.location.href = "/";
+        });
     }
   });
 });
@@ -43,7 +49,7 @@ socket.on("disconnect", function() {
 
 socket.on("clearlobby", () => {
   swal("Error!", "Your opponent quit", "error").then(() => {
-    window.location.href = "/";
+    window.location.href = "/?303";
   });
 });
 
@@ -153,8 +159,15 @@ function defineSketch(isPlayer) {
           );
           if (distance <= dots[i].diameter / 2) {
             song.play();
-
-            score++;
+            console.log(dots[i].diameter);
+            if (dots[i].diameter <= 50) {
+              score += 3;
+            }
+            if (dots[i].diameter <= 70) {
+              score += 2;
+            } else {
+              score++;
+            }
             socket.emit("score", score);
             dots[i].c = sketch.color(111, 204, 0);
             dots.splice(i, 1);
@@ -235,7 +248,7 @@ function defineSketch(isPlayer) {
             sketch.text("Score: " + Opponentscore, 30, 70);
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
-            sketch.text("Lives: " + Opponentmissed, 30, 95);
+            // sketch.text("Lives: " + Opponentmissed, 30, 95);
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
             drawServerMouse();
@@ -266,7 +279,7 @@ function defineSketch(isPlayer) {
             sketch.text("Score: " + score, 30, 70);
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
-            sketch.text("Lives: " + missed, 30, 95);
+            // sketch.text("Lives: " + missed, 30, 95);
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
             sketch.text("Time Left: " + clock, 30, 120);
@@ -319,7 +332,7 @@ socket.on("users", function(data) {
     var text = $("#player" + counter).text(dat);
     if (text.length <= 0) {
       console.log("EMPTY :/");
-      socket.emit("forcereload");
+      location.reload();
     }
 
     $(text).addClass("blue");
