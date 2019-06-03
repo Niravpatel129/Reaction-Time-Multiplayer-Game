@@ -40,6 +40,22 @@ class Users {
     return namesArray;
   }
 
+  getUserName(name, room) {
+    if (this.users.length > 0) {
+      console.log("searching!");
+      this.users.map(dat => {
+        if (dat.name === name && dat.room === room) {
+          console.log("user found");
+          return 1;
+        } else {
+          console.log("user not found");
+        }
+      });
+    } else {
+      return 0;
+    }
+  }
+
   getRoomList() {
     var Currentrooms = [];
     this.users.map(dat => {

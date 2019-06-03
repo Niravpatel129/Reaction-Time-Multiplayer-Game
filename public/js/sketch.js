@@ -315,7 +315,6 @@ socket.on("users", function(data) {
   data.map(dat => {
     counter++;
     var text = $("#player" + counter).text(dat);
-    console.log(text.length);
     if (text.length <= 0) {
       console.log("EMPTY :/");
       socket.emit("forcereload");
