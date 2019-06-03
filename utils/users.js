@@ -42,15 +42,12 @@ class Users {
 
   getUserName(name, room) {
     if (this.users.length > 0) {
-      console.log("searching!");
-      this.users.map(dat => {
-        if (dat.name === name && dat.room === room) {
-          console.log("user found");
+      for (var i = 0; i < this.users.length; i++) {
+        if (this.users[i].name === name && this.users[i].room === room) {
+          console.log("user round");
           return 1;
-        } else {
-          console.log("user not found");
         }
-      });
+      }
     } else {
       return 0;
     }

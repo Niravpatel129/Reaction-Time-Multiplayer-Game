@@ -29,6 +29,9 @@ io.on("connection", socket => {
     } else {
       socket.join(params.room);
       users.removeUser(socket.id);
+      if (users.getUserName(params.name, params.room) === 1) {
+        return callback("sorry, room has someone with this name already!");
+      }
       users.addUser(socket.id, params.name, params.room);
       if (users.getUserSocketList(params.room).length >= 3) {
         return callback("sorry, room has 2 players already");

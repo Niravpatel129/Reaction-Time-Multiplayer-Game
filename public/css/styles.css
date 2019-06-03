@@ -54,15 +54,21 @@ h3 {
   color: azure;
 }
 
-#playercard1 {
+#playercard1,
+#playercard2 {
+  transition: transform 0.2s; /* Animation */
   display: inline-block;
 }
 
-#playercard2 {
-  display: inline-block;
+#playercard1:hover,
+#playercard2:hover {
+  transform: scale(1.1);
 }
 
 #vs {
+  overflow: hidden;
+  transition-duration: 0.3s;
+  transition-property: transform;
   margin-left: 8%;
   margin-right: 8%;
 }
@@ -72,9 +78,14 @@ h3 {
   /* background-image: url("background.png"); */
   background-repeat: no-repeat;
   background-size: 100% 100%;
-
+  transition: transform 0.2s; /* Animation */
   text-align: center;
   margin: 8%;
+}
+
+#ready:hover {
+  background-color: rgb(161, 161, 161);
+  transform: scale(1.03);
 }
 
 button {
@@ -148,6 +159,60 @@ button:disabled {
     rgba(49, 84, 129, 1) 100%
   );
 }
+
+/* Fade out effect */
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 1s, opacity 1s linear;
+}
+
+.puff-out-center {
+  -webkit-animation: puff-out-center 0.3s cubic-bezier(0.165, 0.84, 0.44, 1)
+    both;
+  animation: puff-out-center 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+}
+
+@-webkit-keyframes puff-out-center {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    /* -webkit-filter: blur(0px);
+    filter: blur(0px); */
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(2);
+    transform: scale(1.5);
+    /* -webkit-filter: blur(2px);
+    filter: blur(2px); */
+    opacity: 0;
+  }
+}
+@keyframes puff-out-center {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-filter: blur(0px);
+    filter: blur(0px);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(2);
+    transform: scale(1.5);
+    /* -webkit-filter: blur(2px);
+    filter: blur(2px); */
+    opacity: 0;
+  }
+}
+
+#vs:hover {
+  transform: rotate(-20deg);
+  -webkit-transform: rotate(-20deg);
+}
+
+/* end of effects */
+
 .centered-form__form {
   background: rgba(250, 250, 250, 0.9);
   border: 1px solid #e1e1e1;
@@ -197,6 +262,17 @@ h2 {
   padding-top: 12px;
 }
 
+#player1ready,
+#player2ready {
+  padding: 2px;
+  font-family: sans-serif;
+  font-weight: 100;
+  font-size: 30;
+  background-color: gray;
+  text-shadow: 2px 2px black;
+  color: peachpuff;
+}
+
 canvas {
   opacity: 0.5;
   background-color: white;
@@ -204,7 +280,7 @@ canvas {
 #ready {
   background-color: #e1e1e1;
   color: black;
-  border-radius: 25px;
+  border-radius: 22px;
   width: 15%;
   margin-top: 5%;
   /* display: none; */

@@ -302,9 +302,9 @@ function timeIt() {
   clock--;
 }
 
-socket.on("start", function(data) {
-  pageLoad();
-});
+// socket.on("start", function(data) {
+//   pageLoad();
+// });
 
 socket.on("users", function(data) {
   var counter = 0;
@@ -322,9 +322,7 @@ socket.on("users", function(data) {
 
     $(text).addClass("blue");
   });
-  if (data.length == 2) {
-    $("#ready").css("display", "flex");
-  }
+
   pageLoad();
 });
 
@@ -366,17 +364,23 @@ function ready() {
   let player2 = $("#player2").text();
   if (params.name === player1) {
     $("#player1ready").text("Ready");
+    $("#player1ready").css("background-color", "green");
   } else {
     $("#player2ready").text("Ready");
+    $("#player2ready").css("background-color", "green");
   }
+  $("#ready").addClass("puff-out-center");
+
   pageLoad();
 }
 
 socket.on("ready", name => {
   if (name === player1) {
     $("#player1ready").text("Ready");
+    $("#player1ready").css("background-color", "green");
   } else {
     $("#player2ready").text("Ready");
+    $("#player2ready").css("background-color", "green");
   }
   ServerReady = true;
   console.log("ServerReady: " + ServerReady);
