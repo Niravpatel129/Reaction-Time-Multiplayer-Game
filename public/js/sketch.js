@@ -1,8 +1,8 @@
 //imports
 console.log("%c This is kinda cool! ", "background: #222; color: #bada55");
 // Data
-var serverlost = false;
 var clocktimer;
+var serverlost = false;
 var latestscoreupdate = 0;
 var ClientReady = false;
 var ServerReady = false;
@@ -107,22 +107,26 @@ function defineSketch(isPlayer) {
     };
 
     sketch.setup = function() {
-      if (!clocktimer) {
-        clocktimer = setInterval(timeIt, 1000);
-      }
       var canvasWidth = sketch.windowWidth / 2 - 20;
       updateText();
       let myCanvas = sketch.createCanvas(canvasWidth, 600);
       if (isPlayer) {
+        clocktimer = setInterval(timeIt, 1000);
+
         for (var i = 0; i <= 1; i++) {
           dots.push(new myCircle());
         }
       }
     };
 
+    function generateAnotherDot() {
+      dots.push(new myCircle());
+    }
+
     function timeIt() {
+      socket.emit("score", score);
       clock++;
-      if (clock % 3 == 0) {
+      if (clock % 3 === 0) {
         generateNewWave();
       }
     }
@@ -131,14 +135,13 @@ function defineSketch(isPlayer) {
       if (isPlayer && !gamedone) {
         sendCircle();
         console.log(dots.length > dots.length / 2.5);
-        if (dots.length > dots.length / 2.5 && dots.length > 3) {
+        if (dots.length > 3) {
           gamedone = true;
         }
         score -= dots.length;
         wave++;
         dots = [];
         for (var i = 0; i < clock / 3; i++) {
-          console.log("generate new circle");
           dots.push(new myCircle());
         }
       }
@@ -194,7 +197,7 @@ function defineSketch(isPlayer) {
             socket.emit("score", score);
             dots[i].c = sketch.color(111, 204, 0);
             dots.splice(i, 1);
-            generateAnotherDot();
+            // generateAnotherDot();
             break;
           } else {
             myLength--;
@@ -208,11 +211,9 @@ function defineSketch(isPlayer) {
       };
     }
 
-    function generateAnotherDot() {
-      // dots.push(new myCircle());
-    }
-
     socket.on("winner", name => {
+      clearInterval(clocktimer);
+
       localdata = name;
       sketch.remove();
       opdots = [];
@@ -317,14 +318,8 @@ function defineSketch(isPlayer) {
 
         // EMIT TIMER ENDED
       } else {
+        console.log("game being cleared");
         sketch.clear();
-        if (isPlayer) {
-          sketch.text(
-            "Need 2 Players to Play, FIRST TO 15 SCORE WINS!",
-            width / 3.8,
-            height / 2
-          );
-        }
       }
     };
   };
