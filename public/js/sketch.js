@@ -1,13 +1,13 @@
 //imports
 console.log("%c This is kinda cool! ", "background: #222; color: #bada55");
 // Data
+var serverlost = false;
 var clocktimer;
 var latestscoreupdate = 0;
 var ClientReady = false;
 var ServerReady = false;
 var localdata;
-var secondwhenover = 0;
-var clock = 45;
+var clock = 0;
 var score = 0;
 var missed = 3;
 var gameStarted = false;
@@ -24,6 +24,7 @@ var seeIfChanged;
 var PlayersReady = false;
 var serverMouseX;
 var serverMouseY;
+var wave = 0;
 
 socket.on("connect", function() {
   params = jQuery.deparam(window.location.search);
@@ -113,11 +114,35 @@ function defineSketch(isPlayer) {
       updateText();
       let myCanvas = sketch.createCanvas(canvasWidth, 600);
       if (isPlayer) {
-        for (var i = 0; i <= 5; i++) {
+        for (var i = 0; i <= 1; i++) {
           dots.push(new myCircle());
         }
       }
     };
+
+    function timeIt() {
+      clock++;
+      if (clock % 3 == 0) {
+        generateNewWave();
+      }
+    }
+
+    function generateNewWave() {
+      if (isPlayer && !gamedone) {
+        sendCircle();
+        console.log(dots.length > dots.length / 2.5);
+        if (dots.length > dots.length / 2.5 && dots.length > 3) {
+          gamedone = true;
+        }
+        score -= dots.length;
+        wave++;
+        dots = [];
+        for (var i = 0; i < clock / 3; i++) {
+          console.log("generate new circle");
+          dots.push(new myCircle());
+        }
+      }
+    }
 
     sketchwindowResized = function() {
       resizeCanvas(canvasWidth, 600);
@@ -184,7 +209,7 @@ function defineSketch(isPlayer) {
     }
 
     function generateAnotherDot() {
-      dots.push(new myCircle());
+      // dots.push(new myCircle());
     }
 
     socket.on("winner", name => {
@@ -277,14 +302,16 @@ function defineSketch(isPlayer) {
             sketch.text("Score: " + score, 30, 70);
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
-            // sketch.text("Lives: " + missed, 30, 95);
             sketch.fill(sketch.color(255, 255, 255));
             sketch.textSize(23);
-            sketch.text("Time Left: " + clock, 30, 100);
+            sketch.text("Clock: " + clock, 30, 100);
+            sketch.fill(sketch.color(255, 255, 255));
+            sketch.textSize(23);
+            sketch.text("Wave: " + wave, 30, 130);
           }
         }
-        if (clock <= secondwhenover && !gamedone) {
-          gamedone = true;
+        if (gamedone) {
+          console.log("game done was called local here");
           socket.emit("clockended", { name: params.name, score: score });
         }
 
@@ -307,11 +334,6 @@ function updateText() {
   if (gameStarted) {
     // $("h3").text("Highest Score: " + localStorage.getItem("score") || 0);
   }
-}
-
-function timeIt() {
-  // console.log(clock);
-  clock--;
 }
 
 socket.on("start", function(data) {
@@ -370,13 +392,15 @@ socket.on("gamewinner", data => {
 });
 
 function ready() {
+  score = 0;
+  clock = 0;
+  gamedone = false;
   socket.emit("ready", params.name);
   PlayersReady = true;
   console.log("PlayersReady: " + PlayersReady);
 
   // Do some magic
   let player1 = $("#player1").text();
-  let player2 = $("#player2").text();
   if (params.name === player1) {
     $("#player1ready").text("Ready");
     $("#player1ready").css("background-color", "green");
@@ -387,6 +411,12 @@ function ready() {
   $("#ready").addClass("puff-out-center");
 
   pageLoad();
+}
+
+function showPage() {
+  $("#thePage").css("display", "block");
+  $(".lds-ring").css("display", "none");
+  console.log("this should be called only on page change hopefully");
 }
 
 socket.on("ready", name => {
@@ -402,7 +432,13 @@ socket.on("ready", name => {
   pageLoad();
 });
 
+function showLoading() {
+  $(".lds-ring").css("display", "block");
+  setTimeout(showPage, 800);
+}
+
 $(document).ready(function() {
+  myVar = setTimeout(showPage, 600);
   pageLoad();
 });
 
@@ -410,24 +446,16 @@ function pageLoad() {
   if (gamedone && (!PlayersReady && !ServerReady)) {
     // this is in the condition for "Play Again"
     $("#wrap").css("display", "none");
-    $("#playAgainScreen").css("display", "block");
-    $("#winner").text(
-      "Game Over: Winner was " +
-        localdata.localwinner +
-        " with a score of " +
-        localdata.localwinnerscore
-    );
-    $("#loser").text(
-      "Game Over: Loser was " +
-        localdata.localloser +
-        " with a score of " +
-        localdata.localloserscore
-    );
-    $("#your").css("display", "none");
-    gamedone = false;
+    $("#playAgainScreen").css("display", "inline-block");
+    $("#winner").text(localdata.localwinner);
+    $("#loser").text(localdata.localloser);
+    $("#winnerscore").text(localdata.localwinnerscore || 0);
+    $("#loserscore").text(localdata.localloserscore || 0);
+
     gameStarted = false;
     score = 0;
     Opponentscore = 0;
+    wave = 0;
   } else {
     if (!PlayersReady && !ServerReady) {
       $("#wrap").css("display", "none");
@@ -435,10 +463,14 @@ function pageLoad() {
     }
     if (PlayersReady && ServerReady && !gameStarted) {
       gameStarted = true;
+      gamedone = false;
       $("#ReadyScreen").css("display", "none");
-      $("#wrap").css("display", "flex");
+      $("#playAgainScreen").css("display", "none");
       if (!game1 && !game2) {
-        clock = 45;
+        $("#thePage").css("display", "none");
+        myVar2 = setTimeout(showLoading, 500);
+        clock = 0;
+        $("#wrap").css("display", "flex");
         var mySketch = defineSketch(true);
         var game1 = new p5(mySketch, "myContainer");
         var mySketch = defineSketch(false);
