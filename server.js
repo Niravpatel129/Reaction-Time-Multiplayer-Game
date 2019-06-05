@@ -76,6 +76,14 @@ io.on("connection", socket => {
       socket.to(params.room).emit("score", score);
     });
 
+    socket.on("hoveredVS", () => {
+      io.in(params.room).emit("hoveredVS");
+    });
+
+    socket.on("leftVS", () => {
+      io.in(params.room).emit("leftVS");
+    });
+
     socket.on("winner", name => {
       io.in(params.room).emit("winner", name);
     });

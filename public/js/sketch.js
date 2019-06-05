@@ -429,6 +429,31 @@ $(document).ready(function() {
   pageLoad();
 });
 
+$(document).ready(function() {
+  $("#vs").hover(
+    function() {
+      socket.emit("hoveredVS");
+    },
+    function() {
+      socket.emit("leftVS");
+    }
+  );
+});
+
+socket.on("hoveredVS", () => {
+  console.log("hoveredVS");
+  if (!$("#vs").hasClass("tilt")) {
+    $("#vs").addClass("tilt");
+  }
+});
+
+socket.on("leftVS", () => {
+  console.log("leftVS");
+  if ($("#vs").hasClass("tilt")) {
+    $("#vs").removeClass("tilt");
+  }
+});
+
 function pageLoad() {
   if (gamedone && (!PlayersReady && !ServerReady)) {
     $("#wrap").css("display", "none");
