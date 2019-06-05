@@ -431,7 +431,6 @@ $(document).ready(function() {
 
 function pageLoad() {
   if (gamedone && (!PlayersReady && !ServerReady)) {
-    // this is in the condition for "Play Again"
     $("#wrap").css("display", "none");
     $("#playAgainScreen").css("display", "inline-block");
     console.log(localdata);
@@ -439,10 +438,7 @@ function pageLoad() {
     $("#loser").text(localdata.localloser);
     $("#winnerscore").text(localdata.localwinnerscore);
     $("#loserscore").text(localdata.localloserscore);
-
     gameStarted = false;
-    score = 0;
-    Opponentscore = 0;
     wave = 0;
   } else {
     if (!PlayersReady && !ServerReady) {
@@ -450,6 +446,8 @@ function pageLoad() {
       $("#roommessage").text("Waiting for another player to join");
     }
     if (PlayersReady && ServerReady && !gameStarted) {
+      score = 0;
+      Opponentscore = 0;
       gameStarted = true;
       gamedone = false;
       $("#ReadyScreen").css("display", "none");
