@@ -21,17 +21,17 @@ function saveValues() {
       break;
     case "picture2":
       localStorage.setItem("avatarPos", "picture2");
-      localStorage.setItem("avatar", "js/assets/Bitmap2.png");
+      localStorage.setItem("avatar", "js/assets/bitmap2.png");
 
       break;
     case "picture3":
       localStorage.setItem("avatarPos", "picture3");
-      localStorage.setItem("avatar", "js/assets/Bitmap3.png");
+      localStorage.setItem("avatar", "js/assets/bitmap3.png");
 
       break;
     case "picture4":
       localStorage.setItem("avatarPos", "picture4");
-      localStorage.setItem("avatar", "js/assets/Bitmap4.png");
+      localStorage.setItem("avatar", "js/assets/bitmap4.png");
 
       break;
   }
