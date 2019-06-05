@@ -15,8 +15,8 @@ class Users {
   constructor() {
     this.users = [];
   }
-  addUser(id, name, room) {
-    var user = { id, name, room };
+  addUser(id, name, room, avatar) {
+    var user = { id, name, room, avatar };
     this.users.push(user);
     return user;
   }
@@ -50,6 +50,14 @@ class Users {
       }
     } else {
       return 0;
+    }
+  }
+
+  getUserAvatar(name, room) {
+    for (var i = 0; i < this.users.length; i++) {
+      if (this.users[i].name === name && this.users[i].room === room) {
+        return user.avatar;
+      }
     }
   }
 

@@ -55,3 +55,13 @@ function showSnackbar(data) {
     x.className = x.className.replace("show", "");
   }, 3000);
 }
+
+$(document).ready(() => {
+  if (localStorage.getItem("name")) {
+    console.log("name found");
+    $("#username").val(localStorage.getItem("name"));
+    $("#username").removeAttr("autofocus");
+    $("#username").blur();
+    $("#username").css("background-color", "lightgray");
+  }
+});

@@ -34,6 +34,11 @@ var wave = 0;
 
 socket.on("connect", function() {
   params = jQuery.deparam(window.location.search);
+  if (localStorage.getItem("avatar")) {
+    console.log("found avatar");
+    params.avatar = localStorage.getItem("avatar");
+  }
+  console.log(params);
   socket.emit("join", params, function(err) {
     user = params.name;
     if (err) {
@@ -337,6 +342,7 @@ socket.on("start", function(data) {
 });
 
 socket.on("users", function(data) {
+  console.log(data);
   var counter = 0;
   if (!data) {
     console.warn("user data was null: " + data);
@@ -346,6 +352,8 @@ socket.on("users", function(data) {
     counter++;
     var text = $("#player" + counter).text(dat);
     var text = $("#player" + counter).css("opacity", "1");
+
+    //change avatar
 
     if (text.length <= 0) {
       console.log("EMPTY :/");
@@ -438,7 +446,7 @@ $(document).ready(function() {
   var localtext = localStorage.getItem("ftext");
 
   if (localbg) {
-    console.log("found bg");
+    // console.log("found bg");
     backgroundcolor = localbg;
   }
 

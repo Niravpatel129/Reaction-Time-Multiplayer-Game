@@ -13,36 +13,28 @@
 
     <style>
     input:hover{
-        
-        transform: scale(1.11);
+        transform: scale(1.01);
     }
     </style>
   </head>
 
-  <body class="centered-form">
-    <div class="centered-form__form">
+  <body class="centered-form" style="">
+    <div class="centered-form__form" style="width: auto">
         <br>
-            <p>Choose colors:</p>
+            <p>Choose your local default profile settings:</p>
+            <br>Avatar:
+            <select name="Avatar">
+                    <option value="volvo">picture1</option>
+                    <option value="saab">picture2</option>
+                    <option value="fiat">picture3</option>
+                    <option value="audi">picture4</option>
+                  </select>
+            <br>
             <br>
 
-            <div>
-                <input type="color" id="fbackground" name="head"
-                       value="#333333">
-                <label for="head">Background</label>
-            </div>
-            <br>
-            <div>
-                <input type="color" id="ftarget" name="body"
-                        value="#FF5733">
-                <label for="body">Targets</label>
-            </div>
-            <br>
-            <div>
-                    <input type="color" id="ftext" name="body"
-                            value="#CCEEEE">
-                    <label for="body">Text</label>
-                </div>
-                <br>
+            Name:
+            <input id="localname" type="text" value="">
+            <br><br>
         <input type="submit" onclick="saveValues()"></input>
         <input type="reset" onclick="resetValues()"></input>
 
@@ -53,7 +45,7 @@
         <a href="index.html"><img id="settings" src="/js/assets/home.png" width="55" height="55"></img></a>
 
   </body>
-  <script src="/js/settings.js"></script>
+  <script src="/js/profile.js"></script>
 
 </html>
 

@@ -527,6 +527,18 @@ h2 {
   margin-right: 11px;
 }
 
+#avatar {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-bottom: 11px;
+  margin-right: 71px;
+}
+
+#avatar:hover {
+  transform: scale(1.2);
+}
+
 #settings:hover {
   transform: scale(1.2);
 }
