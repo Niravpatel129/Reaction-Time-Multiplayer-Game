@@ -5,6 +5,7 @@ console.log("%c This is kinda cool! ", "background: #222; color: #bada55");
 var backgroundcolor = "#333333";
 var textcolor = "#CCEEEE";
 var targetcolor = "#FF5733";
+var userAndPosition = [];
 
 // Data
 var clocktimer;
@@ -35,10 +36,10 @@ var wave = 0;
 socket.on("connect", function() {
   params = jQuery.deparam(window.location.search);
   if (localStorage.getItem("avatar")) {
-    console.log("found avatar");
+    // console.log("found avatar");
     params.avatar = localStorage.getItem("avatar");
   }
-  console.log(params);
+  // console.log(params);
   socket.emit("join", params, function(err) {
     user = params.name;
     if (err) {
@@ -98,7 +99,6 @@ function defineSketch(isPlayer) {
         sketch.strokeWeight(2);
         sketch.stroke("#FFF");
         sketch.fill(this.c);
-        console.log(this.c);
         sketch.ellipse(this.x, this.y, this.diameter, this.diameter);
         sketch.ellipse(
           this.x,
@@ -133,7 +133,6 @@ function defineSketch(isPlayer) {
     }
 
     function timeIt() {
-      socket.emit("score", score);
       clock++;
       if (clock % 3 === 0 || clock == 0) {
         generateNewWave();
@@ -143,7 +142,7 @@ function defineSketch(isPlayer) {
     function generateNewWave() {
       if (isPlayer && !gamedone) {
         sendCircle();
-        console.log(dots.length > dots.length / 2.5);
+        // console.log(dots.length > dots.length / 2.5);
         if (dots.length > 3) {
           gamedone = true;
         }
@@ -190,7 +189,7 @@ function defineSketch(isPlayer) {
           );
           if (distance <= dots[i].diameter / 2) {
             song.play();
-            console.log(dots[i].diameter);
+            // console.log(dots[i].diameter);
             if (dots[i].diameter <= 50) {
               score += 3;
             }
@@ -232,7 +231,7 @@ function defineSketch(isPlayer) {
     });
 
     socket.on("score", newScore => {
-      console.log(newScore);
+      // console.log(newScore);
       Opponentscore = newScore;
     });
 
@@ -282,6 +281,7 @@ function defineSketch(isPlayer) {
             sketch.textSize(23);
             drawServerMouse();
           } else {
+            socket.emit("score", score);
             mydots = [];
             for (let i = 0; i < dots.length; i++) {
               dots[i].display();
@@ -342,7 +342,7 @@ socket.on("start", function(data) {
 });
 
 socket.on("users", function(data) {
-  console.log(data);
+  // console.log(data);
   var counter = 0;
   if (!data) {
     console.warn("user data was null: " + data);
@@ -350,8 +350,13 @@ socket.on("users", function(data) {
   }
   data.map(dat => {
     counter++;
+    userAndPosition.push({ name: dat, position: counter });
+    // console.log(userAndPosition);
     var text = $("#player" + counter).text(dat);
+
     var text = $("#player" + counter).css("opacity", "1");
+    if (data.avatar) {
+    }
 
     //change avatar
 
@@ -362,11 +367,19 @@ socket.on("users", function(data) {
 
     $(text).addClass("blue");
   });
-
+  userAndPosition.map(data => {
+    socket.emit("getuseravatar", { name: data.name, room: params.room });
+    socket.on("getuseravatar", dat => {
+      // console.log("hello");
+      // console.log(dat);
+      $("#avatar" + data.position).attr("src", dat);
+    });
+  });
   pageLoad();
 });
 
 socket.on("gamewinner", data => {
+  console.log(data);
   var localwinner;
   var localwinnerscore;
   var localloser;
@@ -377,13 +390,13 @@ socket.on("gamewinner", data => {
     localwinner = data.name;
     localloser = params.name;
     localloserscore = score;
-    console.log(data.name + " is the winner with a score of " + score);
+    // console.log(data.name + " is the winner with a score of " + score);
   } else {
     localwinner = params.name;
     localwinnerscore = score;
     localloser = data.name;
     localloserscore = data.score;
-    console.log(params.name + " is the loser with a score of " + data.score);
+    // console.log(params.name + " is the loser with a score of " + data.score);
   }
 
   socket.emit("winner", {
@@ -418,7 +431,7 @@ function ready() {
 function showPage() {
   $("#thePage").css("display", "block");
   $(".lds-ring").css("display", "none");
-  console.log("this should be called only on page change hopefully");
+  // console.log("this should be called only on page change hopefully");
 }
 
 socket.on("ready", name => {
@@ -430,7 +443,7 @@ socket.on("ready", name => {
     $("#player2ready").css("background-color", "green");
   }
   ServerReady = true;
-  console.log("ServerReady: " + ServerReady);
+  // console.log("ServerReady: " + ServerReady);
   pageLoad();
 });
 
@@ -474,14 +487,14 @@ $(document).ready(function() {
 });
 
 socket.on("hoveredVS", () => {
-  console.log("hoveredVS");
+  // console.log("hoveredVS");
   if (!$("#vs").hasClass("tilt")) {
     $("#vs").addClass("tilt");
   }
 });
 
 socket.on("leftVS", () => {
-  console.log("leftVS");
+  // console.log("leftVS");
   if ($("#vs").hasClass("tilt")) {
     $("#vs").removeClass("tilt");
   }
@@ -491,7 +504,16 @@ function pageLoad() {
   if (gamedone && (!PlayersReady && !ServerReady)) {
     $("#wrap").css("display", "none");
     $("#playAgainScreen").css("display", "inline-block");
-    console.log(localdata);
+    //qwert
+    userAndPosition.map(data => {
+      socket.emit("getuseravatar", { name: data.name, room: params.room });
+      socket.on("getuseravatar", dat => {
+        // console.log();
+        $("#av" + data.position).attr("src", dat);
+      });
+    });
+
+    // console.log(localdata);
     socket.emit("showSnackbar", localdata);
     $("#winner").text(localdata.localwinner);
     $("#loser").text(localdata.localloser);

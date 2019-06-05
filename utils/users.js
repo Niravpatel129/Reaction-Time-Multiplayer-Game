@@ -56,7 +56,7 @@ class Users {
   getUserAvatar(name, room) {
     for (var i = 0; i < this.users.length; i++) {
       if (this.users[i].name === name && this.users[i].room === room) {
-        return user.avatar;
+        return this.users[i].avatar;
       }
     }
   }

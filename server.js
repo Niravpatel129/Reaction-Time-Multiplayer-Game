@@ -34,7 +34,11 @@ io.on("connection", socket => {
       if (users.getUserName(params.name, params.room) === 1) {
         return callback("sorry, room has someone with this name already!");
       }
-      users.addUser(socket.id, params.name, params.room);
+      if (params.avatar) {
+        users.addUser(socket.id, params.name, params.room, params.avatar);
+      } else {
+        users.addUser(socket.id, params.name, params.room);
+      }
       if (users.getUserSocketList(params.room).length >= 3) {
         return callback("sorry, room has 2 players already");
       }
@@ -73,6 +77,13 @@ io.on("connection", socket => {
 
     socket.on("hoveredVS", () => {
       io.in(params.room).emit("hoveredVS");
+    });
+
+    socket.on("getuseravatar", data => {
+      avatar = users.getUserAvatar(data.name, data.room);
+      if (avatar) {
+        socket.emit("getuseravatar", avatar);
+      }
     });
 
     socket.on("leftVS", () => {

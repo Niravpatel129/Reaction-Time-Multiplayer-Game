@@ -3,9 +3,39 @@ $(document).ready(() => {
     console.log("hello");
     $("#localname").val(localStorage.getItem("name"));
   }
+
+  if (localStorage.getItem("avatarPos")) {
+    console.log("found a picture position");
+    $("#selectavatar").val(localStorage.getItem("avatarPos"));
+  }
 });
 
 function saveValues() {
+  var value = $("#selectavatar").val();
+
+  switch (value) {
+    case "picture1":
+      localStorage.setItem("avatarPos", "picture1");
+      localStorage.setItem("avatar", "js/assets/Bitmap.png");
+      console.log(value);
+      break;
+    case "picture2":
+      localStorage.setItem("avatarPos", "picture2");
+      localStorage.setItem("avatar", "js/assets/Bitmap2.png");
+
+      break;
+    case "picture3":
+      localStorage.setItem("avatarPos", "picture3");
+      localStorage.setItem("avatar", "js/assets/Bitmap3.png");
+
+      break;
+    case "picture4":
+      localStorage.setItem("avatarPos", "picture4");
+      localStorage.setItem("avatar", "js/assets/Bitmap4.png");
+
+      break;
+  }
+
   let localname = $("#localname").val();
   if (localname) {
     localStorage.setItem("name", localname);
