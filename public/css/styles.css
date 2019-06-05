@@ -254,6 +254,10 @@ h3 {
   transform: scale(1.1);
 }
 
+#playAgain:hover {
+  transform: scale(1.2);
+}
+
 #vs {
   overflow: hidden;
   transition-duration: 0.3s;

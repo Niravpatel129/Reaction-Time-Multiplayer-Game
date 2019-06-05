@@ -408,6 +408,7 @@ socket.on("gamewinner", data => {
 });
 
 function ready() {
+  $("#playAgain").css("background-color", "green");
   clock = 0;
   gamedone = false;
   socket.emit("ready", params.name);
@@ -532,6 +533,7 @@ function pageLoad() {
       gameStarted = true;
       gamedone = false;
       $("#ReadyScreen").css("display", "none");
+      $("#playAgain").css("background-color", "gray");
       $("#playAgainScreen").css("display", "none");
       if (!game1 && !game2) {
         $("#thePage").css("display", "none");
