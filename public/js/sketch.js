@@ -100,10 +100,7 @@ function defineSketch(isPlayer) {
     }
 
     sketch.keyPressed = function() {
-      if (sketch.keyCode === 32 && missed > 3) {
-        missed = 0;
-        score = 0;
-      }
+      //
     };
 
     sketch.setup = function() {
@@ -166,10 +163,6 @@ function defineSketch(isPlayer) {
 
     if (isPlayer) {
       sketch.mousePressed = function() {
-        if (missed <= 0) {
-          missed = 4;
-          score = 0;
-        }
         var notfoundObj = true;
         var myLength = dots.length;
         for (let i = dots.length - 1; i >= 0; i--) {
@@ -375,7 +368,7 @@ socket.on("gamewinner", data => {
     localwinnerscore = score;
     localloser = data.name;
     localloserscore = data.score;
-    console.log(params.name + " is the winner with a score of " + data.score);
+    console.log(params.name + " is the loser with a score of " + data.score);
   }
 
   socket.emit("winner", {
@@ -387,7 +380,6 @@ socket.on("gamewinner", data => {
 });
 
 function ready() {
-  score = 0;
   clock = 0;
   gamedone = false;
   socket.emit("ready", params.name);
