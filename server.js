@@ -14,9 +14,6 @@ var server = http.createServer(app);
 var io = socketIO(server);
 var users = new Users();
 app.use(express.static(publicPath));
-///
-
-///
 
 io.on("connection", socket => {
   socket.on("getrooms", () => {
@@ -42,8 +39,6 @@ io.on("connection", socket => {
         return callback("sorry, room has 2 players already");
       }
     }
-    // http://prntscr.com/nx6nre
-    // http://prntscr.com/nx6nv4
 
     io.in(params.room).emit("users", users.getUserList(params.room));
     socket.on("ready", data => {
@@ -86,6 +81,10 @@ io.on("connection", socket => {
 
     socket.on("winner", name => {
       io.in(params.room).emit("winner", name);
+    });
+
+    socket.on("showSnackbar", dat => {
+      io.emit("showSnackbar", dat);
     });
 
     socket.on("disconnect", () => {

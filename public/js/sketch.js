@@ -1,5 +1,11 @@
 //imports
 console.log("%c This is kinda cool! ", "background: #222; color: #bada55");
+
+//color
+var backgroundcolor = "#333333";
+var textcolor = "#CCEEEE";
+var targetcolor = "#FF5733";
+
 // Data
 var clocktimer;
 var serverlost = false;
@@ -80,13 +86,14 @@ function defineSketch(isPlayer) {
           this.y = Math.round(sketch.random(height));
           this.diameter = sketch.random(40, 80);
           this.speed = 1;
-          this.c = sketch.color("#FF5733");
+          this.c = sketch.color(targetcolor);
         }
       }
       display() {
         sketch.strokeWeight(2);
         sketch.stroke("#FFF");
         sketch.fill(this.c);
+        console.log(this.c);
         sketch.ellipse(this.x, this.y, this.diameter, this.diameter);
         sketch.ellipse(
           this.x,
@@ -111,7 +118,7 @@ function defineSketch(isPlayer) {
         clocktimer = setInterval(timeIt, 1000);
 
         for (var i = 0; i <= 1; i++) {
-          dots.push(new myCircle());
+          // dots.push(new myCircle());
         }
       }
     };
@@ -123,7 +130,7 @@ function defineSketch(isPlayer) {
     function timeIt() {
       socket.emit("score", score);
       clock++;
-      if (clock % 3 === 0) {
+      if (clock % 3 === 0 || clock == 0) {
         generateNewWave();
       }
     }
@@ -247,7 +254,7 @@ function defineSketch(isPlayer) {
 
     sketch.draw = function() {
       if (gameStarted && PlayersReady) {
-        sketch.background(51);
+        sketch.background(sketch.color(backgroundcolor));
 
         if (missed > 0) {
           if (!isPlayer) {
@@ -258,15 +265,15 @@ function defineSketch(isPlayer) {
                 }
               }
             }
-            sketch.fill(sketch.color(255, 255, 255));
+            sketch.fill(sketch.color(textcolor));
             sketch.textSize(23);
             sketch.stroke("#cee");
             sketch.strokeWeight(1);
             sketch.text("Score: " + Opponentscore, 30, 70);
-            sketch.fill(sketch.color(255, 255, 255));
+            sketch.fill(sketch.color(textcolor));
             sketch.textSize(23);
             // sketch.text("Lives: " + Opponentmissed, 30, 95);
-            sketch.fill(sketch.color(255, 255, 255));
+            sketch.fill(sketch.color(textcolor));
             sketch.textSize(23);
             drawServerMouse();
           } else {
@@ -289,17 +296,17 @@ function defineSketch(isPlayer) {
             }
             seeIfChanged = mydots;
 
-            sketch.fill(sketch.color(255, 255, 255));
+            sketch.fill(sketch.color(textcolor));
             sketch.textSize(23);
-            sketch.stroke("#cee");
+            sketch.stroke(textcolor);
             sketch.strokeWeight(1);
             sketch.text("Score: " + score, 30, 70);
-            sketch.fill(sketch.color(255, 255, 255));
+            sketch.fill(sketch.color(textcolor));
             sketch.textSize(23);
-            sketch.fill(sketch.color(255, 255, 255));
+            sketch.fill(sketch.color(textcolor));
             sketch.textSize(23);
             sketch.text("Clock: " + clock, 30, 100);
-            sketch.fill(sketch.color(255, 255, 255));
+            sketch.fill(sketch.color(textcolor));
             sketch.textSize(23);
             sketch.text("Wave: " + wave, 30, 130);
           }
@@ -425,6 +432,24 @@ function showLoading() {
 }
 
 $(document).ready(function() {
+  //get colors from settings storage
+  var localbg = localStorage.getItem("bg");
+  var localtarget = localStorage.getItem("target");
+  var localtext = localStorage.getItem("ftext");
+
+  if (localbg) {
+    console.log("found bg");
+    backgroundcolor = localbg;
+  }
+
+  if (localtarget) {
+    targetcolor = localtarget;
+  }
+
+  if (localtext) {
+    textcolor = localtext;
+  }
+
   myVar = setTimeout(showPage, 600);
   pageLoad();
 });
@@ -459,6 +484,7 @@ function pageLoad() {
     $("#wrap").css("display", "none");
     $("#playAgainScreen").css("display", "inline-block");
     console.log(localdata);
+    socket.emit("showSnackbar", localdata);
     $("#winner").text(localdata.localwinner);
     $("#loser").text(localdata.localloser);
     $("#winnerscore").text(localdata.localwinnerscore);

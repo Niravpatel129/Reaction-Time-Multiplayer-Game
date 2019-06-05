@@ -1,5 +1,5 @@
 var socket = io();
-
+var holderval;
 socket.on("connect", () => {
   console.log(window.location.search);
   switch (window.location.search) {
@@ -29,3 +29,29 @@ socket.on("return", data => {
   }
   console.log("recieved something");
 });
+
+socket.on("showSnackbar", res => {
+  console.log(res);
+  holderval = res;
+  console.log("showsnackbar");
+  if (res) {
+    showSnackbar(res);
+  }
+});
+
+function showSnackbar(data) {
+  // Get the snackbar DIV
+  var x = document.getElementById("snackbar");
+
+  // Add the "show" class to DIV
+  x.className = "show";
+  $("#winner1").text(data.localwinner);
+  $("#loser1").text(data.localloser);
+  $("#winnerscore").text(data.localwinnerscore);
+  $("#loserscore").text(data.localloserscore);
+
+  // After 3 seconds, remove the show class from DIV
+  setTimeout(function() {
+    x.className = x.className.replace("show", "");
+  }, 3000);
+}
