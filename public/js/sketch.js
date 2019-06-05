@@ -442,10 +442,11 @@ function pageLoad() {
     // this is in the condition for "Play Again"
     $("#wrap").css("display", "none");
     $("#playAgainScreen").css("display", "inline-block");
+    console.log(localdata);
     $("#winner").text(localdata.localwinner);
     $("#loser").text(localdata.localloser);
-    $("#winnerscore").text(localdata.localwinnerscore || 0);
-    $("#loserscore").text(localdata.localloserscore || 0);
+    $("#winnerscore").text(localdata.localwinnerscore);
+    $("#loserscore").text(localdata.localloserscore);
 
     gameStarted = false;
     score = 0;
