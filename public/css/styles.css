@@ -551,6 +551,18 @@ h2 {
   transform: scale(1.2);
 }
 
+#matchhistory {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-bottom: 11px;
+  margin-right: 139px;
+}
+
+#matchhistory:hover {
+  transform: scale(1.2);
+}
+
 #settings:hover {
   transform: scale(1.2);
 }
