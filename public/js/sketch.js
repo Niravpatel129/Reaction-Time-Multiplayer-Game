@@ -8,6 +8,7 @@ var targetcolor = "#FF5733";
 var userAndPosition = [];
 
 // Data
+var havemousecontrol = true;
 var runonce = true;
 var reloadEndingPage = true;
 var clocktimer;
@@ -151,6 +152,18 @@ function defineSketch(isPlayer) {
           gamedone = true;
         }
         score -= dots.length;
+        //remove mouse control
+        //make all player dots red
+
+        setTimeout(() => {
+          havemousecontrol = false;
+          for (var m = 0; m < dots.length; m++) {
+            console.log(dots[m].c);
+            dots[m].c = "rgb(255,0,0)";
+          }
+        }, 2000);
+        havemousecontrol = true;
+
         wave++;
         dots = [];
         for (var i = 0; i < clock / 3; i++) {
@@ -177,7 +190,7 @@ function defineSketch(isPlayer) {
     };
 
     sketch.mousePressed = function() {
-      if (isPlayer) {
+      if (isPlayer && havemousecontrol) {
         var notfoundObj = true;
         var myLength = dots.length;
         for (let i = dots.length - 1; i >= 0; i--) {
@@ -422,7 +435,10 @@ function ready() {
 
   // Do some magic
   let player1 = $("#player1").text();
-  if (params.name === player1) {
+  console.log(params.name.toUpperCase());
+  console.log(player1.toUpperCase());
+
+  if (params.name.toUpperCase() === player1.toUpperCase()) {
     $("#player1ready").text("Ready");
     $("#player1ready").css("background-color", "green");
   } else {
@@ -441,7 +457,8 @@ function showPage() {
 }
 
 socket.on("ready", name => {
-  if (name === player1) {
+  let player1 = $("#player1").text();
+  if (name.toUpperCase() === player1.toUpperCase()) {
     $("#player1ready").text("Ready");
     $("#player1ready").css("background-color", "green");
   } else {
