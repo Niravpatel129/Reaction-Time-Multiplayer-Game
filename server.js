@@ -80,10 +80,11 @@ io.on("connection", socket => {
     });
 
     socket.on("getuseravatar", data => {
-      avatar = users.getUserAvatar(data.name, data.room);
-      if (avatar) {
-        socket.emit("getuseravatar", avatar);
-      }
+      // console.log(data.name, data.room);
+      avatar1 = users.getUserAvatar(data.name1, data.room);
+      avatar2 = users.getUserAvatar(data.name2, data.room);
+
+      socket.emit("getuseravatar", { avatar1: avatar1, avatar2: avatar2 });
     });
 
     socket.on("leftVS", () => {

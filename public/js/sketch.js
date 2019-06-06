@@ -8,6 +8,8 @@ var targetcolor = "#FF5733";
 var userAndPosition = [];
 
 // Data
+var runonce = true;
+var reloadEndingPage = true;
 var clocktimer;
 var serverlost = false;
 var latestscoreupdate = 0;
@@ -56,6 +58,7 @@ socket.on("connect", function() {
 });
 
 socket.on("disconnect", function() {
+  userAndPosition = [];
   socket.emit("clearlobby");
   console.log("Disconnected from server");
 });
@@ -116,9 +119,10 @@ function defineSketch(isPlayer) {
     };
 
     sketch.setup = function() {
-      var canvasWidth = sketch.windowWidth / 2 - 20;
+      let canvasWidth = sketch.windowWidth / 2 - 20;
+      let canvasHeight = 600;
       updateText();
-      let myCanvas = sketch.createCanvas(canvasWidth, 600);
+      let myCanvas = sketch.createCanvas(canvasWidth, canvasHeight);
       if (isPlayer) {
         clocktimer = setInterval(timeIt, 1000);
 
@@ -156,7 +160,7 @@ function defineSketch(isPlayer) {
     }
 
     sketchwindowResized = function() {
-      resizeCanvas(canvasWidth, 600);
+      resizeCanvas(canvasWidth, canvasHeight);
     };
 
     sendCircle = function() {
@@ -172,8 +176,8 @@ function defineSketch(isPlayer) {
       socket.emit("dotsdata", mydots);
     };
 
-    if (isPlayer) {
-      sketch.mousePressed = function() {
+    sketch.mousePressed = function() {
+      if (isPlayer) {
         var notfoundObj = true;
         var myLength = dots.length;
         for (let i = dots.length - 1; i >= 0; i--) {
@@ -212,12 +216,13 @@ function defineSketch(isPlayer) {
             }
           }
         }
-      };
-    }
+      }
+    };
 
     socket.on("winner", name => {
       clearInterval(clocktimer);
-
+      console.log("winner was recieved");
+      reloadEndingPage = true;
       localdata = name;
       sketch.remove();
       opdots = [];
@@ -316,7 +321,9 @@ function defineSketch(isPlayer) {
             sketch.text("Wave: " + wave, 30, 130);
           }
         }
-        if (gamedone) {
+        if (gamedone && runonce) {
+          runonce = false;
+          console.log("runonce");
           console.log("game done was called local here");
           socket.emit("clockended", { name: params.name, score: score });
         }
@@ -324,7 +331,7 @@ function defineSketch(isPlayer) {
         // EMIT TIMER ENDED
       } else {
         console.log("game being cleared");
-        sketch.clear();
+        // sketch.clear();
       }
     };
   };
@@ -342,23 +349,28 @@ socket.on("start", function(data) {
 });
 
 socket.on("users", function(data) {
+  userAndPosition = [];
   // console.log(data);
   var counter = 0;
   if (!data) {
     console.warn("user data was null: " + data);
-    socket.emit("connection");
+    alert("error 104: report to developer");
+    window.location.href = "/";
   }
   data.map(dat => {
     counter++;
-    userAndPosition.push({ name: dat, position: counter });
-    // console.log(userAndPosition);
-    var text = $("#player" + counter).text(dat);
+    // userAndPosition.push({ name: dat, position: counter });
+    // socket.emit("getuseravatar", { name: dat, room: params.room });
 
+    var text = $("#player" + counter).text(dat.name);
     var text = $("#player" + counter).css("opacity", "1");
-    if (data.avatar) {
+    if (dat.avatar) {
+      // console.log(dat.avatar);
+      $("#avatar" + counter).attr("src", dat.avatar);
+      // console.log("avatar" + counter);
     }
-
     //change avatar
+    // console.log(userAndPosition);
 
     if (text.length <= 0) {
       console.log("EMPTY :/");
@@ -367,19 +379,12 @@ socket.on("users", function(data) {
 
     $(text).addClass("blue");
   });
-  userAndPosition.map(data => {
-    socket.emit("getuseravatar", { name: data.name, room: params.room });
-    socket.on("getuseravatar", dat => {
-      // console.log("hello");
-      // console.log(dat);
-      $("#avatar" + data.position).attr("src", dat);
-    });
-  });
+
   pageLoad();
 });
 
 socket.on("gamewinner", data => {
-  console.log(data);
+  // console.log(data);
   var localwinner;
   var localwinnerscore;
   var localloser;
@@ -458,6 +463,9 @@ $(document).ready(function() {
   var localbg = localStorage.getItem("bg");
   var localtarget = localStorage.getItem("target");
   var localtext = localStorage.getItem("ftext");
+  if (!localStorage.getItem("avatar")) {
+    localStorage.setItem("avatar", "js/assets/Bitmap.png");
+  }
 
   if (localbg) {
     // console.log("found bg");
@@ -505,21 +513,33 @@ function pageLoad() {
   if (gamedone && (!PlayersReady && !ServerReady)) {
     $("#wrap").css("display", "none");
     $("#playAgainScreen").css("display", "inline-block");
-    //qwert
-    userAndPosition.map(data => {
-      socket.emit("getuseravatar", { name: data.name, room: params.room });
-      socket.on("getuseravatar", dat => {
-        // console.log();
-        $("#av" + data.position).attr("src", dat);
-      });
-    });
 
     // console.log(localdata);
-    socket.emit("showSnackbar", localdata);
-    $("#winner").text(localdata.localwinner);
-    $("#loser").text(localdata.localloser);
-    $("#winnerscore").text(localdata.localwinnerscore);
-    $("#loserscore").text(localdata.localloserscore);
+
+    if (localdata && reloadEndingPage) {
+      socket.emit("showSnackbar", localdata);
+      $("#winner").text(localdata.localwinner);
+      $("#loser").text(localdata.localloser);
+      $("#winnerscore").text(localdata.localwinnerscore);
+      $("#loserscore").text(localdata.localloserscore);
+
+      //get user avatars
+
+      socket.emit("getuseravatar", {
+        name1: localdata.localwinner,
+        name2: localdata.localloser,
+        room: params.room
+      });
+
+      socket.on("getuseravatar", data => {
+        $("#av1").attr("src", data.avatar1);
+        $("#av2").attr("src", data.avatar2);
+
+        console.log("get user avatar for winner");
+      });
+      reloadEndingPage = false;
+    }
+
     gameStarted = false;
     wave = 0;
   } else {
@@ -528,7 +548,9 @@ function pageLoad() {
       $("#roommessage").text("Waiting for another player to join");
     }
     if (PlayersReady && ServerReady && !gameStarted) {
+      runonce = true;
       score = 0;
+      PlayersReady = true;
       Opponentscore = 0;
       gameStarted = true;
       gamedone = false;

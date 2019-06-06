@@ -34,10 +34,20 @@ class Users {
   }
 
   getUserList(room) {
+    var newArray = [];
     var users = this.users.filter(user => user.room === room);
     var namesArray = users.map(user => user.name);
-
-    return namesArray;
+    users.map(user => {
+      if (user.avatar) {
+        var temppush = { name: user.name, avatar: user.avatar };
+      } else {
+        var temppush = { name: user.name };
+      }
+      newArray.push(temppush);
+    });
+    // console.log(newArray);
+    // return namesArray;
+    return newArray;
   }
 
   getUserName(name, room) {
@@ -56,7 +66,10 @@ class Users {
   getUserAvatar(name, room) {
     for (var i = 0; i < this.users.length; i++) {
       if (this.users[i].name === name && this.users[i].room === room) {
-        return this.users[i].avatar;
+        if (this.users[i].avatar) {
+          // console.log(this.users[i]);
+          return this.users[i].avatar;
+        }
       }
     }
   }
