@@ -17,7 +17,6 @@ app.use(express.static(publicPath));
 
 io.on("connection", socket => {
   socket.on("getrooms", () => {
-    console.log("get all rooms");
     let listofrooms = users.getRoomList();
     socket.emit("return", listofrooms);
   });
@@ -26,7 +25,6 @@ io.on("connection", socket => {
 
   socket.on("join", (params, callback) => {
     if (!isRealString(params.name) || !isRealString(params.room)) {
-      console.log("Name and room name are required");
       return callback("Name and room name are required.");
     } else {
       socket.join(params.room);
@@ -51,12 +49,11 @@ io.on("connection", socket => {
     });
 
     socket.on("forcereload", () => {
-      io.in(params.room).emit("users", users.getUserList(params.room));
+      io.in(params.room).emit("users", users.UserList(params.room));
     });
 
     if (users.getUserSocketList(params.room).length === 2) {
       io.to(params.room).emit("start");
-      console.log("emiting start game");
     }
 
     socket.on("dotsdata", data => {
@@ -80,7 +77,6 @@ io.on("connection", socket => {
     });
 
     socket.on("getuseravatar", data => {
-      // console.log(data.name, data.room);
       avatar1 = users.getUserAvatar(data.name1, data.room);
       avatar2 = users.getUserAvatar(data.name2, data.room);
 

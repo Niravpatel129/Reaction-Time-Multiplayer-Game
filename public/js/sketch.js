@@ -39,7 +39,6 @@ var wave = 0;
 socket.on("connect", function() {
   params = jQuery.deparam(window.location.search);
   if (localStorage.getItem("avatar")) {
-    // console.log("found avatar");
     params.avatar = localStorage.getItem("avatar");
   }
   // console.log(params);
@@ -147,7 +146,6 @@ function defineSketch(isPlayer) {
     function generateNewWave() {
       if (isPlayer && !gamedone) {
         sendCircle();
-        // console.log(dots.length > dots.length / 2.5);
         if (dots.length > 3) {
           gamedone = true;
         }
@@ -158,7 +156,6 @@ function defineSketch(isPlayer) {
         setTimeout(() => {
           havemousecontrol = false;
           for (var m = 0; m < dots.length; m++) {
-            console.log(dots[m].c);
             dots[m].c = "rgb(255,0,0)";
           }
         }, 2000);
@@ -206,7 +203,6 @@ function defineSketch(isPlayer) {
           );
           if (distance <= dots[i].diameter / 2) {
             song.play();
-            // console.log(dots[i].diameter);
             if (dots[i].diameter <= 50) {
               score += 3;
             }
@@ -223,6 +219,7 @@ function defineSketch(isPlayer) {
           } else {
             myLength--;
             if (myLength == 0) {
+              console.log(canvasWidth, this.canvasHeight);
               console.log("missed");
               score--;
               miss.play();
@@ -254,12 +251,12 @@ function defineSketch(isPlayer) {
     });
 
     socket.on("opponentcircles", data => {
-      if (change != opdots) {
-        opdots = [];
-        data.map(d => {
-          opdots.push(new myCircle(d.x, d.y, d.diameter));
-        });
-      }
+      // if (change != opdots) {
+      opdots = [];
+      data.map(d => {
+        opdots.push(new myCircle(d.x, d.y, d.diameter));
+      });
+      // }
       var change = opdots;
     });
 
@@ -453,7 +450,6 @@ function ready() {
 function showPage() {
   $("#thePage").css("display", "block");
   $(".lds-ring").css("display", "none");
-  // console.log("this should be called only on page change hopefully");
 }
 
 socket.on("ready", name => {
@@ -466,7 +462,7 @@ socket.on("ready", name => {
     $("#player2ready").css("background-color", "green");
   }
   ServerReady = true;
-  // console.log("ServerReady: " + ServerReady);
+
   pageLoad();
 });
 
@@ -513,14 +509,12 @@ $(document).ready(function() {
 });
 
 socket.on("hoveredVS", () => {
-  // console.log("hoveredVS");
   if (!$("#vs").hasClass("tilt")) {
     $("#vs").addClass("tilt");
   }
 });
 
 socket.on("leftVS", () => {
-  // console.log("leftVS");
   if ($("#vs").hasClass("tilt")) {
     $("#vs").removeClass("tilt");
   }
@@ -530,8 +524,6 @@ function pageLoad() {
   if (gamedone && (!PlayersReady && !ServerReady)) {
     $("#wrap").css("display", "none");
     $("#playAgainScreen").css("display", "inline-block");
-
-    // console.log(localdata);
 
     if (localdata && reloadEndingPage) {
       socket.emit("showSnackbar", localdata);
@@ -551,8 +543,6 @@ function pageLoad() {
       socket.on("getuseravatar", data => {
         $("#av1").attr("src", data.avatar1);
         $("#av2").attr("src", data.avatar2);
-
-        console.log("get user avatar for winner");
       });
       reloadEndingPage = false;
     }
