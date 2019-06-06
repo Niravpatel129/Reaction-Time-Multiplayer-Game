@@ -219,7 +219,6 @@ function defineSketch(isPlayer) {
           } else {
             myLength--;
             if (myLength == 0) {
-              console.log(canvasWidth, this.canvasHeight);
               console.log("missed");
               score--;
               miss.play();
@@ -432,8 +431,6 @@ function ready() {
 
   // Do some magic
   let player1 = $("#player1").text();
-  console.log(params.name.toUpperCase());
-  console.log(player1.toUpperCase());
 
   if (params.name.toUpperCase() === player1.toUpperCase()) {
     $("#player1ready").text("Ready");
@@ -521,6 +518,35 @@ socket.on("leftVS", () => {
 });
 
 function pageLoad() {
+  let player1 = $("#player1").text();
+  let player2 = $("#player2").text();
+  let winner = $("#winner").text();
+  let loser = $("#loser").text();
+  console.log(player2.trim() == "");
+  if (params) {
+    if (
+      params.name.toUpperCase() === player1.toUpperCase() ||
+      winner.toUpperCase() == params.name.toUpperCase()
+    ) {
+      $("#playercard1").css("border", "solid");
+      if (player2.trim() != "") {
+        $("#playercard2").css("border", "solid gray");
+      }
+    } else {
+      $("#playercard2").css("border", "solid");
+      $("#playercard1").css("border", "solid gray");
+    }
+
+    //play again and ending screen
+    if (winner === params.name) {
+      $("#playercard1winner").css("border", "solid");
+      $("#playercard2loser").css("border", "solid gray");
+    } else {
+      $("#playercard2loser").css("border", "solid");
+      $("#playercard1winner").css("border", "solid gray");
+    }
+  }
+
   if (gamedone && (!PlayersReady && !ServerReady)) {
     $("#wrap").css("display", "none");
     $("#playAgainScreen").css("display", "inline-block");

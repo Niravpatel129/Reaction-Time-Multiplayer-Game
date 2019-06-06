@@ -243,6 +243,14 @@ h3 {
   color: azure;
 }
 
+.playercard1again {
+  margin-right: 55px;
+}
+
+.playercard2again {
+  margin-left: 55px;
+}
+
 #playercard1,
 #playercard2 {
   transition: transform 0.2s; /* Animation */

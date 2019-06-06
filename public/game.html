@@ -76,9 +76,9 @@
       </div>
       <!-- Ending of Ready Screen -->
       <div id="playAgainScreen">
-        <div id="playercard1">
+        <div id="playercard1" class="playercard1again">
             <h2 style="color: lawngreen"><img src="js/assets/crown.png" width="32px" height="32px" style="margin-bottom: -6px; margin-right: -2px;"></img>Winner</h1>
-
+              <div id="playercard1winner">
           <h3 id="winner">Player 1</h3>
           <img
             id="av1"
@@ -89,8 +89,10 @@
           />
           <h3 id="winnerscore">Score: - -</h3>
         </div>
-
-        <div id="playercard2">
+      </div>
+      <span width="200px"></span>
+        <div id="playercard2" class="playercard2again">
+          <div id="playercard2loser">
 
           <h3 id="loser">Player 2</h3>
           <img
@@ -101,6 +103,7 @@
             alt="Smiley face"
           />
           <h3 id="loserscore">Score: - -</h3>
+        </div>
         </div>
         <button id="playAgain" onclick="ready()"><h2>READY</h2></button>
       </div>
