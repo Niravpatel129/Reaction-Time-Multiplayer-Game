@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Nirav's AimBooster Game - Settings</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <script src="/js/libs/jquery-3.1.0.min.js"></script>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <style>
+    input:hover{
+        
+        transform: scale(1.11);
+    }
+    </style>
+  </head>
+
+  <body class="centered-form">
+    <div class="centered-form__form">
+        <br>
+            <p>Choose colors:</p>
+            <br>
+
+            <div>
+                <input type="color" id="fbackground" name="head"
+                       value="#333333">
+                <label for="head">Background</label>
+            </div>
+            <br>
+            <div>
+                <input type="color" id="ftarget" name="body"
+                        value="#FF5733">
+                <label for="body">Targets</label>
+            </div>
+            <br>
+            <div>
+                    <input type="color" id="ftext" name="body"
+                            value="#CCEEEE">
+                    <label for="body">Text</label>
+                </div>
+                <br>
+        <input type="submit" onclick="saveValues()"></input>
+        <input type="reset" onclick="resetValues()"></input>
+
+        <br>
+        <br>
+    </div>
+    
+        <a href="index.html"><img id="settings" src="/js/assets/home.png" width="55" height="55"></img></a>
+
+  </body>
+  <script src="/js/settings.js"></script>
+
+</html>
+
+
