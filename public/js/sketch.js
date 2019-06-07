@@ -154,10 +154,10 @@ function defineSketch(isPlayer) {
         //make all player dots red
 
         setTimeout(() => {
-          havemousecontrol = false;
           for (var m = 0; m < dots.length; m++) {
             dots[m].c = "rgb(255,0,0)";
           }
+          havemousecontrol = false;
         }, 2000);
         havemousecontrol = true;
 
@@ -229,19 +229,40 @@ function defineSketch(isPlayer) {
     };
 
     socket.on("winner", name => {
-      clearInterval(clocktimer);
-      console.log("winner was recieved");
-      reloadEndingPage = true;
       localdata = name;
-      sketch.remove();
-      opdots = [];
-      dots = [];
-      //PlayersReady && ServerReady && !gameStarted
-      gameStarted = false;
       gamedone = true;
-      PlayersReady = false;
-      ServerReady = false;
-      pageLoad();
+
+      clearInterval(clocktimer);
+      console.log(localdata);
+
+      if (localdata.localwinner === params.name) {
+        $("#myContainer2 canvas").css("border", "solid red");
+      } else {
+        for (let m = 0; m < dots.length; m++) {
+          dots[m].color = "#FF0000";
+        }
+        $("#myContainer canvas").css("border", "solid red");
+        for (let z = 0; z < dots.length; z++) {
+          dots[z].color = "#FF0000";
+        }
+      }
+
+      setTimeout(() => {
+        console.log("winner was recieved");
+        reloadEndingPage = true;
+        sketch.remove();
+        opdots = [];
+        dots = [];
+        //PlayersReady && ServerReady && !gameStarted
+        gameStarted = false;
+        PlayersReady = false;
+        ServerReady = false;
+        havemousecontrol = true;
+        $("#myContainer2 canvas").css("border", "none");
+        $("#myContainer canvas").css("border", "none");
+
+        pageLoad();
+      }, 4000);
     });
 
     socket.on("score", newScore => {
@@ -558,8 +579,6 @@ function pageLoad() {
       $("#winnerscore").text(localdata.localwinnerscore);
       $("#loserscore").text(localdata.localloserscore);
 
-      //get user avatars
-
       socket.emit("getuseravatar", {
         name1: localdata.localwinner,
         name2: localdata.localloser,
@@ -587,6 +606,7 @@ function pageLoad() {
       Opponentscore = 0;
       gameStarted = true;
       gamedone = false;
+
       $("#ReadyScreen").css("display", "none");
       $("#playAgain").css("background-color", "gray");
       $("#playAgainScreen").css("display", "none");
