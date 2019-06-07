@@ -451,7 +451,7 @@ button {
   opacity: 110;
 }
 
-#wrap {
+/* #wrap {
   display: flex;
   justify-content: space-between;
   min-height: 100vh;
@@ -459,7 +459,7 @@ button {
   text-align: center;
   padding: 10px;
   margin-top: 0;
-}
+} */
 #myContainer2 canvas {
   background-color: lightblue;
   width: 50%;
